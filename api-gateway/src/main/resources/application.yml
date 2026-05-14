@@ -1,0 +1,54 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      default-filters:
+        - name: RequestRateLimiter
+      routes:
+        - id: ms-auth
+          uri: http://ms-auth:8082
+          predicates:
+            - Path=/auth/**
+        - id: ms-auth-admin
+          uri: http://ms-auth:8082
+          predicates:
+            - Path=/admin/**
+        - id: ms-academico
+          uri: http://ms-academico:8083
+          predicates:
+            - Path=/api/notas/**
+        - id: ms-asistencia
+          uri: http://ms-asistencia:8084
+          predicates:
+            - Path=/api/asistencias/**
+        - id: ms-mensajeria
+          uri: http://ms-mensajeria:8085
+          predicates:
+            - Path=/api/mensajes/**
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          # El JWKS se descarga la primera vez que llega un request, no al arranque.
+          # Esto evita que el Gateway falle al iniciar si MS-Auth aun no esta listo.
+          jwk-set-uri: ${JWT_PUBLIC_KEY_URL:http://ms-auth:8082/auth/.well-known/jwks.json}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,gateway,metrics
+  endpoint:
+    health:
+      show-details: always
+      probes:
+        enabled: true
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true

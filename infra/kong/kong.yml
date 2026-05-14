@@ -1,0 +1,104 @@
+# Configuracion declarativa de Kong (DB-less mode).
+# Define los servicios upstream, las rutas y los plugins de seguridad.
+# Se carga automaticamente desde la variable KONG_DECLARATIVE_CONFIG.
+
+_format_version: "3.0"
+_transform: true
+
+services:
+  # Servicio que expone los endpoints publicos de autenticacion (login y JWKS)
+  - name: ms-auth
+    url: http://ms-auth:8082
+    routes:
+      - name: auth-public
+        paths:
+          - /auth/login
+          - /auth/.well-known
+        strip_path: false
+        methods: [GET, POST, OPTIONS]
+
+  # Servicio del dominio academico (notas y reportes PDF)
+  - name: ms-academico
+    url: http://ms-academico:8083
+    routes:
+      - name: notas-route
+        paths:
+          - /api/notas
+        strip_path: false
+        methods: [GET, POST, PUT, DELETE, OPTIONS]
+    plugins:
+      # Validacion de JWT firmados con RS256 antes de enrutar a MS-Academico
+      - name: jwt
+        config:
+          key_claim_name: iss
+          claims_to_verify:
+            - exp
+
+  # Servicio del dominio de asistencia
+  - name: ms-asistencia
+    url: http://ms-asistencia:8084
+    routes:
+      - name: asistencias-route
+        paths:
+          - /api/asistencias
+        strip_path: false
+        methods: [GET, POST, OPTIONS]
+    plugins:
+      - name: jwt
+        config:
+          key_claim_name: iss
+          claims_to_verify:
+            - exp
+
+  # Servicio del dominio de mensajeria
+  - name: ms-mensajeria
+    url: http://ms-mensajeria:8085
+    routes:
+      - name: mensajes-route
+        paths:
+          - /api/mensajes
+        strip_path: false
+    plugins:
+      - name: jwt
+        config:
+          key_claim_name: iss
+          claims_to_verify:
+            - exp
+
+# Plugins globales aplicados a todas las rutas
+plugins:
+  # Limitacion de tasa para mitigar ataques de fuerza bruta y abuso
+  - name: rate-limiting
+    config:
+      minute: 120
+      policy: local
+
+  # Cabeceras CORS para permitir peticiones desde el frontend en desarrollo
+  - name: cors
+    config:
+      origins:
+        - "http://localhost:3000"
+      methods: [GET, POST, PUT, DELETE, OPTIONS]
+      headers: [Authorization, Content-Type]
+      credentials: true
+      max_age: 3600
+
+  # Trazabilidad: agrega un Correlation-Id a cada request entrante
+  - name: correlation-id
+    config:
+      header_name: X-Correlation-Id
+      generator: uuid
+      echo_downstream: true
+
+# Consumidores con su credencial JWT.
+# La clave (kid/iss) debe coincidir con el claim "iss" emitido por MS-Auth.
+# rsa_public_key debe reemplazarse por el contenido real de public_key.pem.
+consumers:
+  - username: libro-clases-app
+    jwt_secrets:
+      - key: libro-clases-auth
+        algorithm: RS256
+        rsa_public_key: |
+          -----BEGIN PUBLIC KEY-----
+          REEMPLAZAR_CON_EL_CONTENIDO_DE_public_key.pem
+          -----END PUBLIC KEY-----

@@ -1,0 +1,17 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: bff
+
+gateway:
+  url: ${GATEWAY_URL:http://api-gateway:8081}
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      gatewayCB:
+        slidingWindowSize: 20
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s

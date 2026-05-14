@@ -1,0 +1,46 @@
+# Pipeline CI/CD para los microservicios del libro de clases.
+# Ejecuta build y tests por cada microservicio en paralelo, construye imagenes Docker
+# y despliega a Kubernetes cuando se mergea a main.
+
+name: ci-cd
+
+on:
+  push:
+    branches: [develop, main]
+  pull_request:
+    branches: [develop, main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [ms-auth, ms-academico, ms-asistencia, ms-mensajeria, api-gateway, bff]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configurar JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: maven
+
+      - name: Compilar y ejecutar pruebas
+        working-directory: ./${{ matrix.service }}
+        run: mvn -B verify
+
+      - name: Construir imagen Docker
+        working-directory: ./${{ matrix.service }}
+        run: docker build -t registry.local/${{ matrix.service }}:${{ github.sha }} .
+
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Desplegar a Kubernetes
+        run: |
+          kubectl apply -f k8s/
+          kubectl set image deployment/ms-auth ms-auth=registry.local/ms-auth:${{ github.sha }} -n libro-clases

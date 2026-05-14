@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ms-asistencia
+  namespace: libro-clases
+spec:
+  replicas: 2
+  selector:
+    matchLabels: { app: ms-asistencia }
+  template:
+    metadata:
+      labels: { app: ms-asistencia }
+    spec:
+      containers:
+        - name: ms-asistencia
+          image: registry.local/ms-asistencia:1.0.0
+          ports: [{ containerPort: 8084 }]
+          env:
+            - { name: SPRING_DATASOURCE_URL,      value: jdbc:postgresql://postgres-asistencia:5432/asist_db }
+            - { name: SPRING_KAFKA_BOOTSTRAP_SERVERS, value: kafka:9092 }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ms-asistencia
+  namespace: libro-clases
+spec:
+  selector: { app: ms-asistencia }
+  ports:
+    - port: 8084
+      targetPort: 8084

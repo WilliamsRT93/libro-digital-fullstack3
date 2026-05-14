@@ -1,0 +1,243 @@
+# =============================================================================
+# Docker Compose para distribucion (release).
+# Usa imagenes pre-construidas en Docker Hub bajo el namespace ${REGISTRY:-wrivas}.
+# El usuario receptor solo necesita Docker Desktop y este unico archivo.
+#
+# Uso:
+#   1. Ajusta REGISTRY si pusheaste a otro namespace.
+#   2. docker compose -f docker-compose.release.yml pull
+#   3. docker compose -f docker-compose.release.yml up -d
+#
+# Las imagenes ya incluyen las claves RSA, los seeds de usuarios demo y todo
+# lo necesario para correr de inmediato.
+# =============================================================================
+
+networks:
+  libro-net:
+    driver: bridge
+
+volumes:
+  pg-auth-data:
+  pg-acad-data:
+  pg-asist-data:
+  pg-msg-data:
+  es-data:
+  minio-data:
+
+services:
+
+  # ---------- Bases de datos PostgreSQL 17 ----------
+  postgres-auth:
+    image: postgres:17-alpine
+    container_name: postgres-auth
+    environment:
+      POSTGRES_DB: auth_db
+      POSTGRES_USER: auth_user
+      POSTGRES_PASSWORD: auth_pass
+    ports: ["5432:5432"]
+    volumes: ["pg-auth-data:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U auth_user -d auth_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks: [libro-net]
+
+  postgres-academico:
+    image: postgres:17-alpine
+    container_name: postgres-academico
+    environment:
+      POSTGRES_DB: acad_db
+      POSTGRES_USER: acad_user
+      POSTGRES_PASSWORD: acad_pass
+    ports: ["5433:5432"]
+    volumes: ["pg-acad-data:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U acad_user -d acad_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks: [libro-net]
+
+  postgres-asistencia:
+    image: postgres:17-alpine
+    container_name: postgres-asistencia
+    environment:
+      POSTGRES_DB: asist_db
+      POSTGRES_USER: asist_user
+      POSTGRES_PASSWORD: asist_pass
+    ports: ["5434:5432"]
+    volumes: ["pg-asist-data:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U asist_user -d asist_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks: [libro-net]
+
+  postgres-mensajeria:
+    image: postgres:17-alpine
+    container_name: postgres-mensajeria
+    environment:
+      POSTGRES_DB: msg_db
+      POSTGRES_USER: msg_user
+      POSTGRES_PASSWORD: msg_pass
+    ports: ["5435:5432"]
+    volumes: ["pg-msg-data:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U msg_user -d msg_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks: [libro-net]
+
+  # ---------- Kafka ----------
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.7.1
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks: [libro-net]
+
+  kafka:
+    image: confluentinc/cp-kafka:7.7.1
+    container_name: kafka
+    depends_on: [zookeeper]
+    ports: ["9092:9092"]
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+    networks: [libro-net]
+
+  # ---------- ELK ----------
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.15.3
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ports: ["9200:9200"]
+    volumes: ["es-data:/usr/share/elasticsearch/data"]
+    networks: [libro-net]
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.15.3
+    container_name: kibana
+    depends_on: [elasticsearch]
+    ports: ["5601:5601"]
+    environment:
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    networks: [libro-net]
+
+  # ---------- MinIO ----------
+  minio:
+    image: minio/minio:RELEASE.2024-10-13T13-34-11Z
+    container_name: minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    ports: ["9000:9000", "9001:9001"]
+    volumes: ["minio-data:/data"]
+    networks: [libro-net]
+
+  # ---------- Microservicios (imagenes pre-construidas en Docker Hub) ----------
+  ms-auth:
+    image: ${REGISTRY:-wrivas}/libro-clases-ms-auth:${TAG:-1.0.0}
+    container_name: ms-auth
+    depends_on:
+      postgres-auth:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    ports: ["8082:8082"]
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-auth:5432/auth_db
+      SPRING_DATASOURCE_USERNAME: auth_user
+      SPRING_DATASOURCE_PASSWORD: auth_pass
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+    networks: [libro-net]
+
+  ms-academico:
+    image: ${REGISTRY:-wrivas}/libro-clases-ms-academico:${TAG:-1.0.0}
+    container_name: ms-academico
+    depends_on:
+      postgres-academico:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+      minio:
+        condition: service_started
+    ports: ["8083:8083"]
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-academico:5432/acad_db
+      SPRING_DATASOURCE_USERNAME: acad_user
+      SPRING_DATASOURCE_PASSWORD: acad_pass
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      S3_ENDPOINT: http://minio:9000
+      S3_ACCESS_KEY: minioadmin
+      S3_SECRET_KEY: minioadmin
+    networks: [libro-net]
+
+  ms-asistencia:
+    image: ${REGISTRY:-wrivas}/libro-clases-ms-asistencia:${TAG:-1.0.0}
+    container_name: ms-asistencia
+    depends_on:
+      postgres-asistencia:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    ports: ["8084:8084"]
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-asistencia:5432/asist_db
+      SPRING_DATASOURCE_USERNAME: asist_user
+      SPRING_DATASOURCE_PASSWORD: asist_pass
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+    networks: [libro-net]
+
+  ms-mensajeria:
+    image: ${REGISTRY:-wrivas}/libro-clases-ms-mensajeria:${TAG:-1.0.0}
+    container_name: ms-mensajeria
+    depends_on:
+      postgres-mensajeria:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    ports: ["8085:8085"]
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-mensajeria:5432/msg_db
+      SPRING_DATASOURCE_USERNAME: msg_user
+      SPRING_DATASOURCE_PASSWORD: msg_pass
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+    networks: [libro-net]
+
+  api-gateway:
+    image: ${REGISTRY:-wrivas}/libro-clases-api-gateway:${TAG:-1.0.0}
+    container_name: api-gateway
+    depends_on: [ms-auth, ms-academico, ms-asistencia, ms-mensajeria]
+    ports: ["8081:8081"]
+    environment:
+      JWT_PUBLIC_KEY_URL: http://ms-auth:8082/auth/.well-known/jwks.json
+    networks: [libro-net]
+
+  bff:
+    image: ${REGISTRY:-wrivas}/libro-clases-bff:${TAG:-1.0.0}
+    container_name: bff
+    depends_on: [api-gateway]
+    ports: ["8080:8080"]
+    environment:
+      GATEWAY_URL: http://api-gateway:8081
+    networks: [libro-net]
+
+  frontend:
+    image: ${REGISTRY:-wrivas}/libro-clases-frontend:${TAG:-1.0.0}
+    container_name: frontend
+    depends_on: [bff]
+    ports: ["3000:80"]
+    networks: [libro-net]

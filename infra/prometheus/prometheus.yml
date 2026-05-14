@@ -1,0 +1,24 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: ms-auth
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ["ms-auth:8082"]
+  - job_name: ms-academico
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ["ms-academico:8083"]
+  - job_name: ms-asistencia
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ["ms-asistencia:8084"]
+  - job_name: ms-mensajeria
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ["ms-mensajeria:8085"]
+  - job_name: api-gateway
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ["api-gateway:8081"]

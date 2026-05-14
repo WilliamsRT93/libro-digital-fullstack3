@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" type="device">
+  <diagram id="arch" name="Arquitectura">
+    <mxGraphModel dx="1422" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="frontend" value="React Frontend (3000)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="200" height="60" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="bff" value="BFF (8080)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="40" y="160" width="200" height="60" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="gw" value="API Gateway (8081)&#10;JWT validation + Rate limit" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="40" y="280" width="200" height="80" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="auth" value="MS-Auth (8082)&#10;auth_db" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="320" y="160" width="180" height="80" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="acad" value="MS-Academico (8083)&#10;acad_db" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="320" y="260" width="180" height="80" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="asist" value="MS-Asistencia (8084)&#10;asist_db" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="320" y="360" width="180" height="80" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="msg" value="MS-Mensajeria (8085)&#10;msg_db" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="320" y="460" width="180" height="80" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="kafka" value="Kafka (9092)&#10;Topics: inasistencia.detectada" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="600" y="360" width="220" height="80" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="elk" value="ELK Stack&#10;(Logs)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fad7ac;strokeColor=#b46504;" vertex="1" parent="1">
+          <mxGeometry x="900" y="160" width="160" height="60" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="prom" value="Prometheus + Grafana" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fad7ac;strokeColor=#b46504;" vertex="1" parent="1">
+          <mxGeometry x="900" y="260" width="160" height="60" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="s3" value="S3 / MinIO&#10;(Reportes PDF)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fad7ac;strokeColor=#b46504;" vertex="1" parent="1">
+          <mxGeometry x="900" y="360" width="160" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- Edges -->
+        <mxCell id="e1" style="endArrow=classic;html=1;" edge="1" parent="1" source="frontend" target="bff"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e2" style="endArrow=classic;html=1;" edge="1" parent="1" source="bff" target="gw"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e3" style="endArrow=classic;html=1;" edge="1" parent="1" source="gw" target="auth"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e4" style="endArrow=classic;html=1;" edge="1" parent="1" source="gw" target="acad"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e5" style="endArrow=classic;html=1;" edge="1" parent="1" source="gw" target="asist"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e6" style="endArrow=classic;html=1;" edge="1" parent="1" source="gw" target="msg"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e7" style="endArrow=classic;html=1;dashed=1;" edge="1" parent="1" source="asist" target="kafka"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e8" style="endArrow=classic;html=1;dashed=1;" edge="1" parent="1" source="kafka" target="msg"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e9" style="endArrow=classic;html=1;dashed=1;" edge="1" parent="1" source="acad" target="s3"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

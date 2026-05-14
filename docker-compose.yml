@@ -1,0 +1,296 @@
+# Orquestacion para entorno de desarrollo. Todos los servicios comparten una red bridge interna.
+# La directiva top-level "version:" fue removida por ser obsoleta en Docker Compose v2+.
+# En produccion se debe usar los manifiestos de Kubernetes en ./k8s.
+#
+# Perfiles disponibles:
+#   default -> levanta Spring Cloud Gateway como API Gateway
+#   kong    -> levanta Kong como API Gateway alternativo
+
+networks:
+  libro-net:
+    driver: bridge
+
+volumes:
+  pg-auth-data:
+  pg-acad-data:
+  pg-asist-data:
+  pg-msg-data:
+  es-data:
+  minio-data:
+
+services:
+
+  # ---------- Bases de datos (una por microservicio) - PostgreSQL 17 LTS ----------
+  postgres-auth:
+    image: postgres:17-alpine
+    container_name: postgres-auth
+    environment:
+      POSTGRES_DB: auth_db
+      POSTGRES_USER: auth_user
+      POSTGRES_PASSWORD: auth_pass
+    ports: ["5432:5432"]
+    volumes: ["pg-auth-data:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U auth_user -d auth_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks: [libro-net]
+
+  postgres-academico:
+    image: postgres:17-alpine
+    container_name: postgres-academico
+    environment:
+      POSTGRES_DB: acad_db
+      POSTGRES_USER: acad_user
+      POSTGRES_PASSWORD: acad_pass
+    ports: ["5433:5432"]
+    volumes: ["pg-acad-data:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U acad_user -d acad_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks: [libro-net]
+
+  postgres-asistencia:
+    image: postgres:17-alpine
+    container_name: postgres-asistencia
+    environment:
+      POSTGRES_DB: asist_db
+      POSTGRES_USER: asist_user
+      POSTGRES_PASSWORD: asist_pass
+    ports: ["5434:5432"]
+    volumes: ["pg-asist-data:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U asist_user -d asist_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks: [libro-net]
+
+  postgres-mensajeria:
+    image: postgres:17-alpine
+    container_name: postgres-mensajeria
+    environment:
+      POSTGRES_DB: msg_db
+      POSTGRES_USER: msg_user
+      POSTGRES_PASSWORD: msg_pass
+    ports: ["5435:5432"]
+    volumes: ["pg-msg-data:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U msg_user -d msg_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks: [libro-net]
+
+  # ---------- Stack de mensajeria (Kafka 7.7.1 + Zookeeper) ----------
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.7.1
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks: [libro-net]
+
+  kafka:
+    image: confluentinc/cp-kafka:7.7.1
+    container_name: kafka
+    depends_on: [zookeeper]
+    ports: ["9092:9092"]
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+    healthcheck:
+      test: ["CMD", "kafka-topics", "--bootstrap-server", "localhost:9092", "--list"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+    networks: [libro-net]
+
+  # ---------- Stack ELK 8.15.3 ----------
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.15.3
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ports: ["9200:9200"]
+    volumes: ["es-data:/usr/share/elasticsearch/data"]
+    networks: [libro-net]
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.15.3
+    container_name: logstash
+    depends_on: [elasticsearch]
+    ports: ["5044:5044", "5000:5000/tcp"]
+    volumes: ["./infra/logstash/pipeline:/usr/share/logstash/pipeline"]
+    networks: [libro-net]
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.15.3
+    container_name: kibana
+    depends_on: [elasticsearch]
+    ports: ["5601:5601"]
+    environment:
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    networks: [libro-net]
+
+  # ---------- Almacenamiento S3 (MinIO) ----------
+  minio:
+    image: minio/minio:RELEASE.2024-10-13T13-34-11Z
+    container_name: minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    ports: ["9000:9000", "9001:9001"]
+    volumes: ["minio-data:/data"]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks: [libro-net]
+
+  # ---------- Observabilidad (metricas) ----------
+  prometheus:
+    image: prom/prometheus:v2.55.1
+    container_name: prometheus
+    ports: ["9090:9090"]
+    volumes: ["./infra/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml"]
+    networks: [libro-net]
+
+  grafana:
+    image: grafana/grafana:11.3.0
+    container_name: grafana
+    ports: ["3001:3000"]
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    networks: [libro-net]
+
+  # ---------- Microservicios de dominio ----------
+  ms-auth:
+    build: ./ms-auth
+    container_name: ms-auth
+    depends_on:
+      postgres-auth:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    ports: ["8082:8082"]
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-auth:5432/auth_db
+      SPRING_DATASOURCE_USERNAME: auth_user
+      SPRING_DATASOURCE_PASSWORD: auth_pass
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+    networks: [libro-net]
+
+  ms-academico:
+    build: ./ms-academico
+    container_name: ms-academico
+    depends_on:
+      postgres-academico:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+      minio:
+        condition: service_started
+    ports: ["8083:8083"]
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-academico:5432/acad_db
+      SPRING_DATASOURCE_USERNAME: acad_user
+      SPRING_DATASOURCE_PASSWORD: acad_pass
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      S3_ENDPOINT: http://minio:9000
+      S3_ACCESS_KEY: minioadmin
+      S3_SECRET_KEY: minioadmin
+    networks: [libro-net]
+
+  ms-asistencia:
+    build: ./ms-asistencia
+    container_name: ms-asistencia
+    depends_on:
+      postgres-asistencia:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    ports: ["8084:8084"]
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-asistencia:5432/asist_db
+      SPRING_DATASOURCE_USERNAME: asist_user
+      SPRING_DATASOURCE_PASSWORD: asist_pass
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+    networks: [libro-net]
+
+  ms-mensajeria:
+    build: ./ms-mensajeria
+    container_name: ms-mensajeria
+    depends_on:
+      postgres-mensajeria:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    ports: ["8085:8085"]
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-mensajeria:5432/msg_db
+      SPRING_DATASOURCE_USERNAME: msg_user
+      SPRING_DATASOURCE_PASSWORD: msg_pass
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+    networks: [libro-net]
+
+  # ---------- API Gateway: Spring Cloud Gateway (default) ----------
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    profiles: ["default", "scg"]
+    depends_on: [ms-auth, ms-academico, ms-asistencia, ms-mensajeria]
+    ports: ["8081:8081"]
+    environment:
+      JWT_PUBLIC_KEY_URL: http://ms-auth:8082/auth/.well-known/jwks.json
+    networks: [libro-net]
+
+  # ---------- API Gateway alternativo: Kong 3.8 en modo DB-less ----------
+  kong:
+    image: kong:3.8
+    container_name: kong
+    profiles: ["kong"]
+    depends_on: [ms-auth, ms-academico, ms-asistencia, ms-mensajeria]
+    environment:
+      KONG_DATABASE: "off"
+      KONG_DECLARATIVE_CONFIG: /kong/kong.yml
+      KONG_PROXY_LISTEN: 0.0.0.0:8000
+      KONG_ADMIN_LISTEN: 0.0.0.0:8001
+      KONG_LOG_LEVEL: info
+      KONG_PLUGINS: bundled
+    volumes:
+      - ./infra/kong/kong.yml:/kong/kong.yml:ro
+    ports:
+      - "8000:8000"   # proxy publico
+      - "8001:8001"   # admin API
+    networks: [libro-net]
+
+  # ---------- BFF (Backend For Frontend) ----------
+  bff:
+    build: ./bff
+    container_name: bff
+    depends_on: [ms-auth]
+    ports: ["8080:8080"]
+    environment:
+      GATEWAY_URL: http://api-gateway:8081
+    networks: [libro-net]
+
+  # ---------- Frontend React servido por Nginx ----------
+  frontend:
+    build: ./frontend
+    container_name: frontend
+    depends_on: [bff]
+    ports: ["3000:80"]
+    networks: [libro-net]

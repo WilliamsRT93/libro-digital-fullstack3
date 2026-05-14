@@ -1,0 +1,153 @@
+# Manifest unificado para los 4 PostgreSQL del proyecto (Database-per-Service)
+---
+apiVersion: v1
+kind: Secret
+metadata: { name: pg-auth-secret, namespace: libro-clases }
+type: Opaque
+stringData: { username: auth_user, password: auth_pass }
+---
+apiVersion: v1
+kind: Secret
+metadata: { name: pg-acad-secret, namespace: libro-clases }
+type: Opaque
+stringData: { username: acad_user, password: acad_pass }
+---
+apiVersion: v1
+kind: Secret
+metadata: { name: pg-asist-secret, namespace: libro-clases }
+type: Opaque
+stringData: { username: asist_user, password: asist_pass }
+---
+apiVersion: v1
+kind: Secret
+metadata: { name: pg-msg-secret, namespace: libro-clases }
+type: Opaque
+stringData: { username: msg_user, password: msg_pass }
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata: { name: postgres-auth, namespace: libro-clases }
+spec:
+  serviceName: postgres-auth
+  replicas: 1
+  selector: { matchLabels: { app: postgres-auth } }
+  template:
+    metadata: { labels: { app: postgres-auth } }
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:17-alpine
+          env:
+            - { name: POSTGRES_DB, value: auth_db }
+            - { name: POSTGRES_USER, valueFrom: { secretKeyRef: { name: pg-auth-secret, key: username } } }
+            - { name: POSTGRES_PASSWORD, valueFrom: { secretKeyRef: { name: pg-auth-secret, key: password } } }
+          ports: [{ containerPort: 5432 }]
+          volumeMounts: [{ name: data, mountPath: /var/lib/postgresql/data }]
+  volumeClaimTemplates:
+    - metadata: { name: data }
+      spec:
+        accessModes: [ReadWriteOnce]
+        resources: { requests: { storage: 5Gi } }
+---
+apiVersion: v1
+kind: Service
+metadata: { name: postgres-auth, namespace: libro-clases }
+spec:
+  selector: { app: postgres-auth }
+  ports: [{ port: 5432, targetPort: 5432 }]
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata: { name: postgres-academico, namespace: libro-clases }
+spec:
+  serviceName: postgres-academico
+  replicas: 1
+  selector: { matchLabels: { app: postgres-academico } }
+  template:
+    metadata: { labels: { app: postgres-academico } }
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:17-alpine
+          env:
+            - { name: POSTGRES_DB, value: acad_db }
+            - { name: POSTGRES_USER, valueFrom: { secretKeyRef: { name: pg-acad-secret, key: username } } }
+            - { name: POSTGRES_PASSWORD, valueFrom: { secretKeyRef: { name: pg-acad-secret, key: password } } }
+          ports: [{ containerPort: 5432 }]
+          volumeMounts: [{ name: data, mountPath: /var/lib/postgresql/data }]
+  volumeClaimTemplates:
+    - metadata: { name: data }
+      spec:
+        accessModes: [ReadWriteOnce]
+        resources: { requests: { storage: 5Gi } }
+---
+apiVersion: v1
+kind: Service
+metadata: { name: postgres-academico, namespace: libro-clases }
+spec:
+  selector: { app: postgres-academico }
+  ports: [{ port: 5432, targetPort: 5432 }]
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata: { name: postgres-asistencia, namespace: libro-clases }
+spec:
+  serviceName: postgres-asistencia
+  replicas: 1
+  selector: { matchLabels: { app: postgres-asistencia } }
+  template:
+    metadata: { labels: { app: postgres-asistencia } }
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:17-alpine
+          env:
+            - { name: POSTGRES_DB, value: asist_db }
+            - { name: POSTGRES_USER, valueFrom: { secretKeyRef: { name: pg-asist-secret, key: username } } }
+            - { name: POSTGRES_PASSWORD, valueFrom: { secretKeyRef: { name: pg-asist-secret, key: password } } }
+          ports: [{ containerPort: 5432 }]
+          volumeMounts: [{ name: data, mountPath: /var/lib/postgresql/data }]
+  volumeClaimTemplates:
+    - metadata: { name: data }
+      spec:
+        accessModes: [ReadWriteOnce]
+        resources: { requests: { storage: 5Gi } }
+---
+apiVersion: v1
+kind: Service
+metadata: { name: postgres-asistencia, namespace: libro-clases }
+spec:
+  selector: { app: postgres-asistencia }
+  ports: [{ port: 5432, targetPort: 5432 }]
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata: { name: postgres-mensajeria, namespace: libro-clases }
+spec:
+  serviceName: postgres-mensajeria
+  replicas: 1
+  selector: { matchLabels: { app: postgres-mensajeria } }
+  template:
+    metadata: { labels: { app: postgres-mensajeria } }
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:17-alpine
+          env:
+            - { name: POSTGRES_DB, value: msg_db }
+            - { name: POSTGRES_USER, valueFrom: { secretKeyRef: { name: pg-msg-secret, key: username } } }
+            - { name: POSTGRES_PASSWORD, valueFrom: { secretKeyRef: { name: pg-msg-secret, key: password } } }
+          ports: [{ containerPort: 5432 }]
+          volumeMounts: [{ name: data, mountPath: /var/lib/postgresql/data }]
+  volumeClaimTemplates:
+    - metadata: { name: data }
+      spec:
+        accessModes: [ReadWriteOnce]
+        resources: { requests: { storage: 5Gi } }
+---
+apiVersion: v1
+kind: Service
+metadata: { name: postgres-mensajeria, namespace: libro-clases }
+spec:
+  selector: { app: postgres-mensajeria }
+  ports: [{ port: 5432, targetPort: 5432 }]

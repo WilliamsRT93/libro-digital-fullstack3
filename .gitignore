@@ -1,0 +1,295 @@
+# =============================================================================
+# Plataforma Libro de Clases Digital - .gitignore
+# Cubre Java/Maven, Node/Vite, IDEs, secretos, artefactos de build y SO.
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Secretos y credenciales (CRITICO - nunca commitear)
+# -----------------------------------------------------------------------------
+**/src/main/resources/keys/*.pem
+**/src/main/resources/keys/*.key
+**/src/main/resources/keys/*.p12
+**/src/main/resources/keys/*.jks
+**/keys/*.pem
+**/keys/*.key
+
+# Archivos de variables de entorno
+.env
+.env.local
+.env.*.local
+.env.development
+.env.production
+.env.test
+
+# Credenciales y configuracion sensible
+**/secrets/
+**/*-secret.yml
+**/*-secret.yaml
+**/application-prod.yml
+**/application-prod.properties
+**/application-secret.yml
+
+# Tokens y archivos de autenticacion
+.npmrc
+.yarnrc
+auth.json
+
+# -----------------------------------------------------------------------------
+# Java / Maven
+# -----------------------------------------------------------------------------
+target/
+build/
+out/
+bin/
+
+# Artefactos compilados
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+*.zip
+*.tar.gz
+*.rar
+
+# Logs y dumps de la JVM
+hs_err_pid*
+replay_pid*
+*.hprof
+
+# Maven wrapper
+.mvn/wrapper/maven-wrapper.jar
+.mvn/timing.properties
+
+# Maven local repository
+.m2/
+
+# Lombok / annotation processing
+.apt_generated/
+.factorypath
+
+# -----------------------------------------------------------------------------
+# Spring Boot
+# -----------------------------------------------------------------------------
+.spring-boot-devtools/
+*.heapdump
+
+# -----------------------------------------------------------------------------
+# Node.js / Frontend (React + Vite)
+# -----------------------------------------------------------------------------
+node_modules/
+jspm_packages/
+
+# Build output
+frontend/dist/
+frontend/build/
+**/dist/
+**/build/
+
+# Cache de Vite
+.vite/
+**/.vite/
+.cache/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Coverage reports
+coverage/
+*.lcov
+.nyc_output/
+
+# Testing
+.jest/
+
+# -----------------------------------------------------------------------------
+# IDEs
+# -----------------------------------------------------------------------------
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+.idea_modules/
+
+# VS Code
+.vscode/
+*.code-workspace
+.history/
+
+# Eclipse
+.project
+.classpath
+.settings/
+.metadata/
+.recommenders/
+.springBeans
+.sts4-cache/
+
+# NetBeans
+nbproject/private/
+nbbuild/
+dist/
+nbdist/
+nb-configuration.xml
+
+# JDeveloper
+.jdeveloper/
+
+# -----------------------------------------------------------------------------
+# Sistema operativo
+# -----------------------------------------------------------------------------
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+.fseventsd
+.TemporaryItems
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+*.stackdump
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# -----------------------------------------------------------------------------
+# Logs y archivos temporales
+# -----------------------------------------------------------------------------
+*.log
+logs/
+log/
+**/logs/
+*.log.*
+*.tmp
+*.temp
+*.bak
+*.backup
+*.swp
+*.swo
+
+# -----------------------------------------------------------------------------
+# Docker / Compose
+# -----------------------------------------------------------------------------
+docker-compose.override.yml
+docker-compose.override.yaml
+docker-compose.local.yml
+
+# Volumenes locales
+volumes/
+data/
+**/data/postgres/
+**/data/elasticsearch/
+**/data/minio/
+**/data/kafka/
+**/data/zookeeper/
+
+# -----------------------------------------------------------------------------
+# Kubernetes
+# -----------------------------------------------------------------------------
+.kube/
+kubeconfig
+*.kubeconfig
+
+# Helm
+charts/*.tgz
+**/charts/*/charts/
+
+# -----------------------------------------------------------------------------
+# Testing y QA
+# -----------------------------------------------------------------------------
+**/surefire-reports/
+**/failsafe-reports/
+**/jacoco.exec
+**/jacoco-it.exec
+**/*.jtl
+
+# -----------------------------------------------------------------------------
+# Reportes y PDFs
+# -----------------------------------------------------------------------------
+reportes-locales/
+*.pdf
+
+# -----------------------------------------------------------------------------
+# Otros
+# -----------------------------------------------------------------------------
+cmake-build-*/
+.sonar/
+.scannerwork/
+*.tfstate
+*.tfstate.*
+.terraform/
+*.tfvars
+.history
+.vscode-test/
+allure-results/
+allure-report/
+**/test-results/
+**/playwright-report/
+**/cypress/screenshots/
+**/cypress/videos/
+*postman_environment.json
+*insomnia_environment.json
+.Icon*
+~$*
+*.tmp.driveupload
+*.tmp.drivedownload
+
+# =============================================================================
+# Carpetas excluidas del repositorio
+# =============================================================================
+scripts/
+Documentacion/
+docs/
+skills/
+skills-lock.json
+
+# =============================================================================
+# Asistentes de IA y contexto de sesion (NUNCA subir al repositorio)
+# =============================================================================
+CLAUDE.md
+**/CLAUDE.md
+.claude/
+BITACORA_DESARROLLO.md
+BITACORA_*.md
+bitacora*.md
+bitacora*.txt
+PROMPT_CORRECCIONES.md
+PROMPT_*.md
+prompt_*.md
+ARCHITECTURE_DECISIONS.md
+cowork-context.*
+.cowork/
+cowork/
+*.cowork
+memory/
+.memory/
+agent-context.*
+session-context.*
+*-session.json
+.agents/
+**/.agents/
+agent/
+**/agent/
+.scripts/
+**/.scripts/
+*_generado_por_ia*
+*_ai_context*
+*_llm_context*
