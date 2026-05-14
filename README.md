@@ -30,14 +30,14 @@ con ELK + Prometheus/Grafana.
                   +--------+---------+
                            |  HTTPS
                            v
-                  +------------------+
-                  |   BFF (8080)     |
-                  +--------+---------+
-                           |  HTTPS
+                  +---------------------+
+                  |  API Gateway (8081) |  <- Valida JWT (RS256), routing, rate-limit
+                  |   (SCG o Kong)      |
+                  +--------+------------+
+                           |  HTTP
                            v
                   +------------------+
-                  | API Gateway 8081 |  <- Valida JWT (RS256)
-                  | (SCG o Kong)     |
+                  |   BFF (8080)     |  <- Composicion y circuit breaker para la UI
                   +--------+---------+
                            |
    +----------------+------+------+----------------+
@@ -153,7 +153,7 @@ ruta por contenedores no requiere ninguno de los tres en tu maquina local.
 ### Paso 1. Clonar el repositorio
 
 ```bash
-git clone <repo-url> libro-clases
+git clone git@github.com:WilliamsRT93/libro-digital-fullstack3.git libro-clases
 cd libro-clases
 ```
 
@@ -486,7 +486,7 @@ docker compose up -d ms-auth
 
 ### Frontend React
 
-Ver seccion completa abajo despues de "Errores Frecuentes".
+Ver seccion completa al final del documento.
 
 ## Errores Frecuentes
 
@@ -1131,6 +1131,227 @@ de Postgres.
 **Solucion**: No es un error, es lo esperado. Para preservar datos usa solo
 `docker compose down` (sin `-v`). Para resetear el entorno desde cero, `down -v`
 es el comando correcto.
+
+## Pruebas Unitarias
+
+El proyecto incluye **15 pruebas** distribuidas en 4 microservicios: 13 pruebas unitarias con
+Mockito (sin levantar contexto Spring) y 2 pruebas de integracion Kafka con broker embebido.
+Todas usan JUnit 5 + AssertJ.
+
+### Inventario de pruebas
+
+| # | Microservicio | Clase | Descripcion |
+|---|---------------|-------|-------------|
+| 1 | ms-auth | `AuthServiceTest` | Login exitoso retorna token y datos del usuario |
+| 2 | ms-auth | `AuthServiceTest` | Password incorrecto lanza `BadCredentialsException` |
+| 3 | ms-auth | `AuthServiceTest` | Usuario deshabilitado lanza `BadCredentialsException` sin verificar password |
+| 4 | ms-auth | `UserAdminServiceTest` | Crear usuario nuevo persiste y retorna `UserResponse` correcto |
+| 5 | ms-auth | `UserAdminServiceTest` | Username duplicado lanza `409 CONFLICT` antes de llegar a la BD |
+| 6 | ms-auth | `UserAdminServiceTest` | Listar usuarios retorna lista completa mapeada a DTO |
+| 7 | ms-auth | `UserAdminServiceTest` | Eliminar ID inexistente lanza `404 NOT FOUND` sin llamar a `deleteById` |
+| 8 | ms-auth | `UserAdminServiceTest` | Actualizar roles persiste el nuevo conjunto de roles |
+| 9 | ms-asistencia | `AsistenciaServiceTest` | Estado PRESENTE no publica ningun evento en Kafka |
+| 10 | ms-asistencia | `AsistenciaServiceTest` | Estado AUSENTE publica `InasistenciaEvent` en el topic correcto |
+| 11 | ms-academico | `NotaServiceTest` | Crear nota valida persiste entidad y retorna DTO correcto |
+| 12 | ms-academico | `NotaServiceTest` | Consultar notas de alumno retorna lista ordenada |
+| 13 | ms-academico | `NotaServiceTest` | Alumno sin notas retorna lista vacia (sin NullPointerException) |
+| 14 | ms-asistencia | `KafkaZookeeperIntegrationTest` | Broker Kafka con Zookeeper embebido esta activo y accesible |
+| 15 | ms-asistencia | `KafkaZookeeperIntegrationTest` | Ciclo completo productor -> topic -> consumidor entrega mensaje intacto |
+
+### Como ejecutar las pruebas
+
+#### Todos los microservicios a la vez (desde la raiz del proyecto)
+
+```bash
+mvn -pl ms-auth,ms-academico,ms-asistencia test
+```
+
+#### Por microservicio individual
+
+```bash
+# Solo MS-Auth (pruebas 1-8)
+mvn -f ms-auth/pom.xml test
+
+# Solo MS-Academico (pruebas 11-13)
+mvn -f ms-academico/pom.xml test
+
+# Solo MS-Asistencia (pruebas 9-10 + 14-15)
+mvn -f ms-asistencia/pom.xml test
+```
+
+#### Solo una clase especifica
+
+```bash
+mvn -f ms-auth/pom.xml test -Dtest=AuthServiceTest
+mvn -f ms-auth/pom.xml test -Dtest=UserAdminServiceTest
+mvn -f ms-asistencia/pom.xml test -Dtest=AsistenciaServiceTest
+mvn -f ms-asistencia/pom.xml test -Dtest=KafkaZookeeperIntegrationTest
+mvn -f ms-academico/pom.xml test -Dtest=NotaServiceTest
+```
+
+#### Solo un test especifico
+
+```bash
+mvn -f ms-auth/pom.xml test -Dtest="AuthServiceTest#login_credencialesValidas_retornaTokenYDatosUsuario"
+```
+
+#### Dentro de Docker (sin Maven local)
+
+```bash
+docker run --rm \
+  -v "$(pwd)/ms-auth:/project" \
+  -w /project \
+  maven:3.9.9-eclipse-temurin-21 \
+  mvn test
+```
+
+### Resultado esperado
+
+Una ejecucion exitosa completa muestra al final de cada modulo:
+
+```
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.colegio.auth.service.AuthServiceTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Running com.colegio.auth.service.UserAdminServiceTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0
+[INFO] -------------------------------------------------------
+[INFO] BUILD SUCCESS
+```
+
+Para MS-Asistencia, la prueba de integracion Kafka tarda entre 5 y 15 segundos en levantar
+el broker embebido; es normal ver logs de Kafka durante ese tiempo:
+
+```
+[INFO] Running com.colegio.asistencia.service.AsistenciaServiceTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Running com.colegio.asistencia.kafka.KafkaZookeeperIntegrationTest
+... (logs de EmbeddedKafka durante ~10s) ...
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS
+```
+
+Resumen consolidado al ejecutar los tres modulos juntos: **15 pruebas, 0 fallos, 0 errores**.
+
+### Errores comunes en pruebas y soluciones
+
+#### Error 1: `No Java compiler is provided in this environment`
+
+```
+[ERROR] Failed to execute goal ... compile ... No compiler is provided in this environment.
+Perhaps you are running on a JRE rather than a JDK?
+```
+
+**Causa**: Maven no encuentra el JDK, solo hay JRE instalado.
+
+**Solucion**:
+```bash
+# Verificar que es JDK (no JRE)
+java -version       # debe mostrar "openjdk" o "temurin"
+javac -version      # si falla, es JRE puro
+
+# Instalar JDK 21 en Ubuntu/Debian
+sudo apt install -y temurin-21-jdk
+
+# En Windows: descargar desde https://adoptium.net y configurar JAVA_HOME
+$env:JAVA_HOME = "C:\Program Files\Eclipse Adoptium\jdk-21..."
+```
+
+#### Error 2: `Cannot find symbol` al compilar los tests
+
+```
+[ERROR] error: cannot find symbol
+symbol:   class NotaRequest
+location: class NotaServiceTest
+```
+
+**Causa**: el codigo del servicio tiene cambios que no reflejan los tests, o los tests
+estan fuera de la estructura de paquetes correcta.
+
+**Solucion**:
+```bash
+mvn -f ms-academico/pom.xml clean test
+```
+
+Si el error persiste, verificar que los tests estan en
+`src/test/java/com/colegio/<microservicio>/...` y no en otro directorio.
+
+#### Error 3: `Mockito cannot mock this class`
+
+```
+[ERROR] org.mockito.exceptions.base.MockitoException:
+Cannot mock/spy class com.colegio.auth.repository.UserRepository
+```
+
+**Causa**: version incompatible de Mockito o byte-buddy por declarar Mockito manualmente
+en el `pom.xml` ademas de `spring-boot-starter-test`.
+
+**Solucion**: No declarar Mockito manualmente; Spring Boot ya lo incluye en la version
+correcta via `spring-boot-starter-test`. Verificar que no hay exclusiones accidentales:
+
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-test</artifactId>
+    <scope>test</scope>
+</dependency>
+```
+
+#### Error 4: `Address already in use` en `KafkaZookeeperIntegrationTest`
+
+```
+[ERROR] Caused by: org.apache.kafka.common.KafkaException:
+Failed to create new KafkaAdminClient ... Address already in use: localhost:9092
+```
+
+**Causa**: el broker Kafka de Docker Compose esta corriendo en `localhost:9092` y
+`@EmbeddedKafka` intenta usar el mismo puerto.
+
+**Solucion**: detener el broker Kafka de Docker antes de correr la prueba:
+
+```bash
+docker compose stop kafka zookeeper
+mvn -f ms-asistencia/pom.xml test -Dtest=KafkaZookeeperIntegrationTest
+docker compose start kafka zookeeper
+```
+
+#### Error 5: `Test timeout` en `KafkaZookeeperIntegrationTest`
+
+```
+[ERROR] producirYConsumirEvento_flujoCicloCompleto_mensajeLlegaIntacto
+Condition not fulfilled within 10000 milliseconds
+```
+
+**Causa**: el broker embebido tardo mas de 10 segundos en levantar. Ocurre en maquinas
+con poca RAM o en el primer build cuando los JARs de Kafka no estan en cache.
+
+**Solucion**: ejecutar el test una segunda vez; la cache de la JVM lo resuelve:
+
+```bash
+mvn -f ms-asistencia/pom.xml test -Dtest=KafkaZookeeperIntegrationTest
+mvn -f ms-asistencia/pom.xml test -Dtest=KafkaZookeeperIntegrationTest
+```
+
+#### Error 6: `UnnecessaryStubbingException` al correr todos los tests juntos
+
+```
+[ERROR] org.mockito.exceptions.misusing.UnnecessaryStubbingException:
+Unnecessary stubbings detected ...
+```
+
+**Causa**: Mockito en modo estricto detecta un `when(...)` declarado en `@BeforeEach`
+que no fue usado por todos los metodos de test.
+
+**Solucion**: mover el stub al test especifico que lo necesita, o anotar la clase con
+`@MockitoSettings` para relajar la estrictez solo donde sea necesario:
+
+```java
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = org.mockito.quality.Strictness.LENIENT)
+class AuthServiceTest { ... }
+```
 
 ## Frontend React
 
