@@ -1,12 +1,12 @@
 # Plataforma Libro de Clases Digital
 
-Sistema de microservicios para gestion academica escolar: autenticacion, notas, asistencia,
-mensajeria y reportes PDF. Arquitectura event-driven con Kafka, segura con JWT y observable
+Sistema de microservicios para gestión académica escolar: autenticación, notas, asistencia,
+mensajería y reportes PDF. Arquitectura event-driven con Kafka, segura con JWT y observable
 con ELK + Prometheus/Grafana.
 
-## Stack Tecnologico
+## Stack Tecnológico
 
-| Capa | Tecnologia | Version |
+| Capa | Tecnología | Versión |
 |------|------------|---------|
 | Frontend | React + Vite + Axios | React 18 |
 | BFF | Spring Boot WebFlux | 3.2.5 |
@@ -15,12 +15,12 @@ con ELK + Prometheus/Grafana.
 | Java Runtime | Eclipse Temurin LTS | 21.0.5 |
 | Build tool | Maven | 3.9.9 |
 | Base de Datos | PostgreSQL | 17 |
-| Mensajeria | Apache Kafka (Confluent) | 7.7.1 |
+| Mensajería | Apache Kafka (Confluent) | 7.7.1 |
 | Logs | ELK Stack | 8.15.3 |
-| Metricas | Prometheus + Grafana | 2.55 / 11.3 |
+| Métricas | Prometheus + Grafana | 2.55 / 11.3 |
 | Almacenamiento | MinIO (S3 compatible) | RELEASE.2024-10-13 |
 | Contenedores | Docker | 24+ |
-| Orquestacion | Kubernetes | 1.28+ |
+| Orquestación | Kubernetes | 1.28+ |
 
 ## Arquitectura
 
@@ -37,7 +37,7 @@ con ELK + Prometheus/Grafana.
                            |  HTTP
                            v
                   +------------------+
-                  |   BFF (8080)     |  <- Composicion y circuit breaker para la UI
+                  |   BFF (8080)     |  <- Composición y circuit breaker para la UI
                   +--------+---------+
                            |
    +----------------+------+------+----------------+
@@ -57,7 +57,7 @@ con ELK + Prometheus/Grafana.
               mensaje.enviado, notificacion.requerida
 
          <-- ELK Stack: Filebeat -> Logstash -> Elasticsearch -> Kibana -->
-         <-- Prometheus / Grafana (metricas) -->
+         <-- Prometheus / Grafana (métricas) -->
          <-- MinIO/S3 (reportes PDF) -->
 ```
 
@@ -66,44 +66,44 @@ con ELK + Prometheus/Grafana.
 | Servicio | Puerto | Base de Datos | Responsabilidad |
 |----------|--------|---------------|-----------------|
 | Frontend (React + Nginx) | 3000 | (sin BD) | UI |
-| BFF | 8080 | (sin BD) | Composicion para frontend |
+| BFF | 8080 | (sin BD) | Composición para frontend |
 | API Gateway (Spring Cloud Gateway) | 8081 | (sin BD) | Routing, JWT validation, rate-limit |
 | API Gateway (Kong, alternativa) | 8000 (proxy) / 8001 (admin) | (sin BD) | Routing, JWT plugin |
-| MS-Auth | 8082 | auth_db (5432) | Login, JWT, gestion de usuarios |
-| MS-Academico | 8083 | acad_db (5433) | CRUD notas, generacion PDF |
+| MS-Auth | 8082 | auth_db (5432) | Login, JWT, gestión de usuarios |
+| MS-Académico | 8083 | acad_db (5433) | CRUD notas, generación PDF |
 | MS-Asistencia | 8084 | asist_db (5434) | Registro asistencia, evento inasistencia |
-| MS-Mensajeria | 8085 | msg_db (5435) | Mensajes y notificaciones |
+| MS-Mensajería | 8085 | msg_db (5435) | Mensajes y notificaciones |
 | Kafka | 9092 | (broker) | Bus de eventos |
-| Elasticsearch | 9200 | (indice) | Storage de logs |
-| Kibana | 5601 | (UI) | Visualizacion de logs |
-| Prometheus | 9090 | (TSDB) | Metricas |
+| Elasticsearch | 9200 | (índice) | Storage de logs |
+| Kibana | 5601 | (UI) | Visualización de logs |
+| Prometheus | 9090 | (TSDB) | Métricas |
 | Grafana | 3001 | (UI) | Dashboards |
 | MinIO | 9000 / 9001 (UI) | (objetos) | Almacenamiento de PDFs |
 
 ## Roles RBAC
 
-- ADMIN: gestion de usuarios y configuracion global.
-- DOCENTE: registra notas y asistencia, envia mensajes, consulta reportes.
+- ADMIN: gestión de usuarios y configuración global.
+- DOCENTE: registra notas y asistencia, envía mensajes, consulta reportes.
 - APODERADO: consulta notas y asistencia de pupilos, recibe notificaciones.
 
 ## Requisitos Previos
 
 ### Docker Desktop (obligatorio)
 
-El proyecto se orquesta integramente con Docker Compose v2 (sintaxis `docker compose`,
-con espacio, no `docker-compose` con guion que esta deprecado). Necesitas
+El proyecto se orquesta íntegramente con Docker Compose v2 (sintaxis `docker compose`,
+con espacio, no `docker-compose` con guión que está deprecado). Necesitas
 **Docker Desktop 24 o superior** corriendo antes de ejecutar cualquier comando del
 proyecto.
 
-| Sistema | Como instalar |
+| Sistema | Cómo instalar |
 |---------|---------------|
 | **Windows 10/11** | Descarga Docker Desktop desde https://www.docker.com/products/docker-desktop/. Habilita WSL 2 si te lo solicita. Al terminar, reinicia el equipo. |
 | **macOS (Intel y Apple Silicon)** | Descarga el instalador `.dmg` desde la misma URL. Para Apple Silicon usa el build "Apple Chip". |
-| **Linux Ubuntu/Debian** | `sudo apt update && sudo apt install -y docker.io docker-compose-plugin`. Agrega tu usuario al grupo `docker` (`sudo usermod -aG docker $USER`) y reabre la sesion. |
+| **Linux Ubuntu/Debian** | `sudo apt update && sudo apt install -y docker.io docker-compose-plugin`. Agrega tu usuario al grupo `docker` (`sudo usermod -aG docker $USER`) y reabre la sesión. |
 
-#### Verifica que Docker Desktop esta funcionando
+#### Verifica que Docker Desktop está funcionando
 
-Antes de continuar, abre Docker Desktop y espera a que su icono en la bandeja del
+Antes de continuar, abre Docker Desktop y espera a que su ícono en la bandeja del
 sistema indique "Engine running". Luego en una terminal nueva valida:
 
 ```bash
@@ -119,25 +119,25 @@ docker run --rm hello-world
 
 Si alguno de los tres comandos falla:
 
-- **Windows**: abre Docker Desktop manualmente desde el menu Inicio. Si pide actualizacion WSL, ejecuta en PowerShell con permisos de administrador: `wsl --update`.
+- **Windows**: abre Docker Desktop manualmente desde el menú Inicio. Si pide actualización WSL, ejecuta en PowerShell con permisos de administrador: `wsl --update`.
 - **macOS / Linux**: arranca el daemon (`open -a Docker` en macOS, `sudo systemctl start docker` en Linux).
-- **Si dice "command not found"**: Docker Desktop no esta instalado o no esta en el PATH. Reinstala.
+- **Si dice "command not found"**: Docker Desktop no está instalado o no está en el PATH. Reinstala.
 
-#### Recursos minimos recomendados para Docker Desktop
+#### Recursos mínimos recomendados para Docker Desktop
 
-| Recurso | Minimo | Recomendado | Como ajustarlo |
+| Recurso | Mínimo | Recomendado | Cómo ajustarlo |
 |---------|--------|-------------|----------------|
 | RAM | 6 GB | 8 GB | Settings -> Resources -> Memory |
 | CPU | 2 vCPU | 4 vCPU | Settings -> Resources -> CPUs |
 | Disco | 30 GB libres | 60 GB libres | Settings -> Resources -> Disk image size |
 
 Si abres muchos servicios (toda la pila usa ~20 contenedores) y tienes menos de
-6 GB asignados, los procesos Java se quedaran sin memoria y los contenedores
-entraran en estado `Restarting`.
+6 GB asignados, los procesos Java se quedarán sin memoria y los contenedores
+entrarán en estado `Restarting`.
 
 ### Otras herramientas
 
-| Herramienta | Version minima | Para que se usa | Verificacion |
+| Herramienta | Versión mínima | Para qué se usa | Verificación |
 |-------------|----------------|-----------------|--------------|
 | Git | 2.40+ | Clonar el repo | `git --version` |
 | Java JDK | 21 LTS | Build local fuera de Docker (opcional) | `java --version` |
@@ -145,10 +145,10 @@ entraran en estado `Restarting`.
 | Node.js | 22 LTS | Frontend en modo dev (opcional) | `node --version` |
 | kubectl | 1.28+ | Despliegue Kubernetes (opcional) | `kubectl version --client` |
 
-Java, Maven y Node solo son necesarios si quieres compilar fuera de Docker. La
-ruta por contenedores no requiere ninguno de los tres en tu maquina local.
+Java, Maven y Node sólo son necesarios si quieres compilar fuera de Docker. La
+ruta por contenedores no requiere ninguno de los tres en tu máquina local.
 
-## Instalacion y Ejecucion
+## Instalación y Ejecución
 
 ### Paso 1. Clonar el repositorio
 
@@ -160,7 +160,7 @@ cd libro-clases
 ### Paso 2. Generar las claves RSA para el JWT
 
 MS-Auth firma los tokens con RS256, por lo que necesita un par de claves PEM en
-`ms-auth/src/main/resources/keys/`. Elige el metodo segun tu sistema operativo.
+`ms-auth/src/main/resources/keys/`. Elige el método según tu sistema operativo.
 
 #### En Linux, macOS o WSL (con OpenSSL nativo)
 
@@ -168,16 +168,16 @@ MS-Auth firma los tokens con RS256, por lo que necesita un par de claves PEM en
 mkdir -p ms-auth/src/main/resources/keys
 cd ms-auth/src/main/resources/keys
 
-# 1. BORRAR claves anteriores (si existen) para garantizar regeneracion limpia
+# 1. BORRAR claves anteriores (si existen) para garantizar regeneración limpia
 rm -f *.pem
 
 # 2. Generar la clave privada en formato PKCS8
 openssl genpkey -algorithm RSA -out private_key.pem -pkeyopt rsa_keygen_bits:2048
 
-# 3. Extraer la clave publica en formato X.509
+# 3. Extraer la clave pública en formato X.509
 openssl rsa -in private_key.pem -pubout -out public_key.pem
 
-# 4. Verificar que la clave privada esta bien formada
+# 4. Verificar que la clave privada está bien formada
 openssl rsa -in private_key.pem -check -noout
 echo "OK: claves regeneradas"
 
@@ -186,38 +186,38 @@ cd -
 
 #### En Windows con PowerShell (sin instalar OpenSSL)
 
-Aprovechamos que Docker ya esta instalado para el proyecto y usamos un
+Aprovechamos que Docker ya está instalado para el proyecto y usamos un
 contenedor temporal con OpenSSL:
 
 ```powershell
 # 1. Crear la carpeta destino si no existe
 New-Item -ItemType Directory -Force -Path "ms-auth\src\main\resources\keys" | Out-Null
 
-# 2. BORRAR claves anteriores (si existen) para garantizar regeneracion limpia
+# 2. BORRAR claves anteriores (si existen) para garantizar regeneración limpia
 Remove-Item ms-auth\src\main\resources\keys\*.pem -ErrorAction SilentlyContinue
 
 # 3. Generar la clave privada (PKCS8)
 docker run --rm -v "${PWD}\ms-auth\src\main\resources\keys:/keys" alpine/openssl `
   genpkey -algorithm RSA -out /keys/private_key.pem -pkeyopt rsa_keygen_bits:2048
 
-# 4. Extraer la clave publica (X.509)
+# 4. Extraer la clave pública (X.509)
 docker run --rm -v "${PWD}\ms-auth\src\main\resources\keys:/keys" alpine/openssl `
   rsa -in /keys/private_key.pem -pubout -out /keys/public_key.pem
 
-# 5. Verificar que la clave privada es valida
+# 5. Verificar que la clave privada es válida
 docker run --rm -v "${PWD}\ms-auth\src\main\resources\keys:/keys" alpine/openssl `
   rsa -in /keys/private_key.pem -check -noout
 Write-Host "OK: claves regeneradas" -ForegroundColor Green
 ```
 
 Atajo: si quieres ejecutar todo lo anterior en un solo comando, usa el script
-incluido `.\scripts\reset-keys.ps1` que ya hace borrado + regeneracion +
-verificacion.
+incluido `.\scripts\reset-keys.ps1` que ya hace borrado + regeneración +
+verificación.
 
 #### En Windows con Git Bash
 
 Git for Windows trae OpenSSL incluido. Abre Git Bash (no PowerShell) y ejecuta
-los mismos comandos del bloque Linux/macOS de mas arriba.
+los mismos comandos del bloque Linux/macOS de más arriba.
 
 #### En Windows con OpenSSL instalado nativo
 
@@ -225,10 +225,10 @@ los mismos comandos del bloque Linux/macOS de mas arriba.
 choco install openssl -y    # con Chocolatey
 # o
 scoop install openssl       # con Scoop
-# o instalador grafico desde https://slproweb.com/products/Win32OpenSSL.html
+# o instalador gráfico desde https://slproweb.com/products/Win32OpenSSL.html
 ```
 
-#### Verificacion (todos los sistemas)
+#### Verificación (todos los sistemas)
 
 ```bash
 # En Linux/macOS/Git Bash:
@@ -240,22 +240,22 @@ Get-ChildItem ms-auth\src\main\resources\keys
 
 Deben aparecer `private_key.pem` y `public_key.pem`.
 
-### Paso 3. Construir las imagenes Docker
+### Paso 3. Construir las imágenes Docker
 
-Compila y construye todas las imagenes en una sola pasada:
+Compila y construye todas las imágenes en una sola pasada:
 
 ```bash
 docker compose build
 ```
 
-Esto puede demorar entre 5 y 20 minutos en la primera ejecucion debido a la
+Esto puede demorar entre 5 y 20 minutos en la primera ejecución debido a la
 descarga de dependencias Maven y npm. En builds posteriores Docker reutiliza
 las capas y se reduce a 1-2 minutos por servicio modificado.
 
 ### Paso 4. Levantar la pila completa (arranque por etapas)
 
 Para evitar race conditions (especialmente que los microservicios intenten
-conectar a Kafka antes de que el broker este listo), usa el script de
+conectar a Kafka antes de que el broker esté listo), usa el script de
 arranque por etapas incluido en el proyecto:
 
 ```bash
@@ -274,7 +274,7 @@ Este script ejecuta el arranque en este orden:
 2. **Zookeeper y Kafka** con esperas controladas (10s + 15s)
 3. **Stack de observabilidad** (Elasticsearch, Logstash, Kibana, MinIO, Prometheus, Grafana)
 4. **MS-Auth** primero (espera 30s y verifica health) para que publique el JWKS
-5. **Resto de microservicios** (Academico, Asistencia, Mensajeria), luego API Gateway, BFF y Frontend
+5. **Resto de microservicios** (Académico, Asistencia, Mensajería), luego API Gateway, BFF y Frontend
 
 Equivalente manual sin script:
 
@@ -313,9 +313,9 @@ docker compose logs -f ms-auth
 ```
 
 Cuando veas en los logs `Started AuthApplication in X.X seconds`, el servicio
-esta listo. Presiona Ctrl+C para salir del seguimiento de logs.
+está listo. Presiona Ctrl+C para salir del seguimiento de logs.
 
-### Paso 5. Verificar que todo este saludable
+### Paso 5. Verificar que todo esté saludable
 
 #### Linux / macOS / Git Bash
 
@@ -359,20 +359,20 @@ Todos deben retornar `{"status":"UP"}`.
 | Prometheus | http://localhost:9090 | (sin auth) |
 | MinIO Console | http://localhost:9001 | minioadmin / minioadmin |
 
-### Paso 7. Usuarios de demostracion (precargados)
+### Paso 7. Usuarios de demostración (precargados)
 
-MS-Auth carga automaticamente tres usuarios de prueba al iniciarse por primera
+MS-Auth carga automáticamente tres usuarios de prueba al iniciarse por primera
 vez (gracias a `data.sql` con BCrypt factor 12). No necesitas crear usuarios
-manualmente para probar la aplicacion.
+manualmente para probar la aplicación.
 
-| Usuario | Contrasenia | Roles | Proposito |
-|---------|-------------|-------|-----------|
+| Usuario | Contraseña | Roles | Propósito |
+|---------|------------|-------|-----------|
 | `admin1` | `Admin123!` | ADMIN, DOCENTE | Acceso total al sistema |
 | `docente1` | `Docente123!` | DOCENTE | Registro de notas y asistencia |
 | `apoderado1` | `Apoderado123!` | APODERADO | Consulta de notas y reportes |
 
-Los hashes BCrypt estan en `ms-auth/src/main/resources/data.sql`. Para regenerar
-con otras contrasenias, edita ese archivo y reinicia MS-Auth.
+Los hashes BCrypt están en `ms-auth/src/main/resources/data.sql`. Para regenerar
+con otras contraseñas, edita ese archivo y reinicia MS-Auth.
 
 Si prefieres crear usuarios adicionales manualmente:
 
@@ -385,13 +385,13 @@ docker exec -it postgres-auth psql -U auth_user -d auth_db
 no funciona bien sin TTY. Usa una de estas alternativas:
 
 ```bash
-# Opcion A: con winpty (Git Bash incluye winpty)
+# Opción A: con winpty (Git Bash incluye winpty)
 winpty docker exec -it postgres-auth psql -U auth_user -d auth_db
 
-# Opcion B: ejecutar consultas no interactivas con -c
+# Opción B: ejecutar consultas no interactivas con -c
 docker exec -i postgres-auth psql -U auth_user -d auth_db -c "SELECT username, full_name FROM users;"
 
-# Opcion C: en PowerShell (TTY funciona normalmente)
+# Opción C: en PowerShell (TTY funciona normalmente)
 docker exec -it postgres-auth psql -U auth_user -d auth_db
 ```
 
@@ -444,16 +444,16 @@ Invoke-WebRequest -Uri "http://localhost:8080/bff/notas/reporte-pdf?alumnoId=1" 
   -Headers @{ Authorization = "Bearer $token" } -OutFile reporte.pdf
 ```
 
-> **Credenciales correctas** (las que carga automaticamente MS-Auth desde
+> **Credenciales correctas** (las que carga automáticamente MS-Auth desde
 > `data.sql`):
 > `admin1 / Admin123!` - `docente1 / Docente123!` - `apoderado1 / Apoderado123!`
 
-### Comandos utiles
+### Comandos útiles
 
 ```bash
 docker compose stop                # detener preservando datos
-docker compose down                # detener y eliminar contenedores (mantiene volumenes)
-docker compose down -v             # detener y eliminar TODO incluidos volumenes
+docker compose down                # detener y eliminar contenedores (mantiene volúmenes)
+docker compose down -v             # detener y eliminar TODO incluidos volúmenes
 docker compose build ms-auth       # reconstruir un servicio
 docker compose up -d ms-auth       # levantar/reiniciar un servicio
 docker compose logs -f ms-auth     # logs en tiempo real
@@ -464,56 +464,56 @@ docker exec -it ms-auth sh         # shell dentro del contenedor
 
 La carpeta `scripts/` agrupa helpers para tareas frecuentes:
 
-| Script | Plataforma | Proposito |
+| Script | Plataforma | Propósito |
 |--------|-----------|-----------|
 | `start-staged.ps1` / `.sh` | Windows / Linux | Arranque por etapas con limpieza de redes |
 | `reset-keys.ps1` / `.sh` | Windows / Linux | Borra y regenera las claves RSA del JWT |
-| `fix-docker.ps1` | Windows PowerShell | Limpia cache corrupto de Docker y rearma |
+| `fix-docker.ps1` | Windows PowerShell | Limpia caché corrupto de Docker y rearma |
 | `fix-network.ps1` / `.sh` | Windows / Linux | Resuelve "network not found" del compose |
 | `rebuild-microservicios.ps1` / `.sh` | Windows / Linux | Rebuild forzado de los 6 microservicios Java |
-| `pull-base-images.ps1` / `.sh` | Windows / Linux | Pre-descarga las 13 imagenes base con reintentos |
+| `pull-base-images.ps1` / `.sh` | Windows / Linux | Pre-descarga las 13 imágenes base con reintentos |
 
-Uso tipico:
+Uso típico:
 
 ```powershell
 # Regenerar claves del JWT
 .\scripts\reset-keys.ps1
 
-# Despues, reconstruir MS-Auth
+# Después, reconstruir MS-Auth
 docker compose build ms-auth
 docker compose up -d ms-auth
 ```
 
 ### Frontend React
 
-Ver seccion completa al final del documento.
+Ver sección completa al final del documento.
 
 ## Errores Frecuentes
 
-Esta seccion recopila los problemas mas comunes que veras al levantar el proyecto
-por primera vez. Lee aqui antes de reportar bugs.
+Esta sección recopila los problemas más comunes que verás al levantar el proyecto
+por primera vez. Lee aquí antes de reportar bugs.
 
 ### 1. `Connection refused` al hacer curl al microservicio
 
-**Sintoma**: `curl http://localhost:8082/actuator/health` retorna
+**Síntoma**: `curl http://localhost:8082/actuator/health` retorna
 `No es posible conectar con el servidor remoto` o `Failed to connect to localhost port 8082`.
 
 **Causas y soluciones**:
 
-| Causa probable | Diagnostico | Solucion |
+| Causa probable | Diagnóstico | Solución |
 |----------------|-------------|----------|
-| Los contenedores no estan levantados | `docker compose ps` muestra lista vacia | Ejecutar `docker compose up -d` |
-| MS-Auth aun esta arrancando | Estado `starting` en `docker compose ps` | Esperar 60 a 120 segundos |
-| MS-Auth crasheo al iniciar | Estado `Exited` o `Restarting` | `docker compose logs ms-auth --tail 100` |
+| Los contenedores no están levantados | `docker compose ps` muestra lista vacía | Ejecutar `docker compose up -d` |
+| MS-Auth aún está arrancando | Estado `starting` en `docker compose ps` | Esperar 60 a 120 segundos |
+| MS-Auth crasheó al iniciar | Estado `Exited` o `Restarting` | `docker compose logs ms-auth --tail 100` |
 | Docker Desktop apagado | `docker --version` falla | Abrir Docker Desktop |
-| Firewall bloqueando localhost | Otros puertos tampoco responden | Desactivar temporal o agregar excepcion |
+| Firewall bloqueando localhost | Otros puertos tampoco responden | Desactivar temporal o agregar excepción |
 
 ### 2. `version is obsolete` al ejecutar docker compose
 
-**Sintoma**: `WARN[0000] /docker-compose.yml: the attribute version is obsolete`.
+**Síntoma**: `WARN[0000] /docker-compose.yml: the attribute version is obsolete`.
 
-**Solucion**: Ya esta corregido en este proyecto. Si lo ves, es porque tienes
-una version vieja en cache. Refresca con:
+**Solución**: Ya está corregido en este proyecto. Si lo ves, es porque tienes
+una versión vieja en caché. Refresca con:
 
 ```bash
 docker compose down
@@ -521,34 +521,34 @@ git pull
 docker compose up -d
 ```
 
-### 3. `command not found: docker-compose` (con guion)
+### 3. `command not found: docker-compose` (con guión)
 
-**Sintoma**: `bash: docker-compose: command not found`.
+**Síntoma**: `bash: docker-compose: command not found`.
 
-**Solucion**: Docker Compose v1 (con guion) esta deprecado. Usa siempre la
+**Solución**: Docker Compose v1 (con guión) está deprecado. Usa siempre la
 sintaxis nueva con espacio: **`docker compose`**. Viene incluida en Docker
 Desktop 24+. Si tienes Docker viejo, actualiza Docker Desktop.
 
 ### 4. `error during connect: ... pipe/docker_engine` (Windows)
 
-**Sintoma**: Mensajes como `open //./pipe/docker_engine: The system cannot find the file specified`.
+**Síntoma**: Mensajes como `open //./pipe/docker_engine: The system cannot find the file specified`.
 
-**Causa**: Docker Desktop no esta corriendo.
+**Causa**: Docker Desktop no está corriendo.
 
-**Solucion**:
+**Solución**:
 
-1. Abre Docker Desktop desde el menu Inicio.
+1. Abre Docker Desktop desde el menú Inicio.
 2. Espera a que la bandeja muestre "Engine running" (puede tardar 30 a 60 segundos).
 3. Verifica con `docker run --rm hello-world`.
 
 ### 5. `Cannot start service ms-auth: keys not found` o `private_key.pem`
 
-**Sintoma**: MS-Auth crashea con `FileNotFoundException` apuntando a `private_key.pem`.
+**Síntoma**: MS-Auth crashea con `FileNotFoundException` apuntando a `private_key.pem`.
 
-**Causa**: No se ejecuto el Paso 2 (generar las claves RSA), o las claves se
-generaron pero la imagen Docker se construyo antes y no las incluye.
+**Causa**: No se ejecutó el Paso 2 (generar las claves RSA), o las claves se
+generaron pero la imagen Docker se construyó antes y no las incluye.
 
-**Solucion**:
+**Solución**:
 
 ```bash
 # 1. Generar las claves (ver Paso 2)
@@ -559,29 +559,29 @@ docker compose up -d ms-auth
 
 ### 6. Elasticsearch no inicia / sale `max virtual memory areas vm.max_map_count too low`
 
-**Sintoma**: `elasticsearch` queda en estado `Exited` con codigo 78.
+**Síntoma**: `elasticsearch` queda en estado `Exited` con código 78.
 
-**Solucion**:
+**Solución**:
 
 - **Linux**: `sudo sysctl -w vm.max_map_count=262144`
 - **Windows/macOS**: Editar `Settings -> Resources -> Advanced` en Docker Desktop
-  y aumentar la memoria a 6 GB minimo. WSL2 maneja `vm.max_map_count` automaticamente
+  y aumentar la memoria a 6 GB mínimo. WSL2 maneja `vm.max_map_count` automáticamente
   si tienes Docker Desktop reciente; si no, en PowerShell de admin: `wsl -d docker-desktop -u root sysctl -w vm.max_map_count=262144`.
 
 ### 7. `Port is already allocated`
 
-**Sintoma**: `Bind for 0.0.0.0:5432 failed: port is already allocated`.
+**Síntoma**: `Bind for 0.0.0.0:5432 failed: port is already allocated`.
 
-**Causa**: Otro Postgres (u otro servicio) esta usando ese puerto en tu maquina.
+**Causa**: Otro Postgres (u otro servicio) está usando ese puerto en tu máquina.
 
-**Solucion**:
+**Solución**:
 
 - Detener el servicio que ocupa el puerto, o
 - Cambiar el mapping en `docker-compose.yml`. Por ejemplo, cambia
-  `"5432:5432"` a `"15432:5432"` y la BD seguira accesible en `localhost:15432`.
+  `"5432:5432"` a `"15432:5432"` y la BD seguirá accesible en `localhost:15432`.
 
 ```bash
-# Identificar quien usa el puerto en Linux/macOS:
+# Identificar quién usa el puerto en Linux/macOS:
 lsof -i :5432
 
 # En Windows PowerShell:
@@ -590,15 +590,15 @@ Get-NetTCPConnection -LocalPort 5432
 
 ### 8. Login retorna 401 siempre
 
-**Sintoma**: Devuelve `{"code":"AUTH_001","message":"Invalid credentials"}` aunque
+**Síntoma**: Devuelve `{"code":"AUTH_001","message":"Invalid credentials"}` aunque
 las credenciales son correctas.
 
 **Causas**:
 
-1. El hash BCrypt insertado en `auth_db` no corresponde a la contrasenia.
-2. No insertaste el rol en `user_roles` y el JWT viene sin claims utiles.
+1. El hash BCrypt insertado en `auth_db` no corresponde a la contraseña.
+2. No insertaste el rol en `user_roles` y el JWT viene sin claims útiles.
 
-**Solucion**: Genera un hash BCrypt valido:
+**Solución**: Genera un hash BCrypt válido:
 
 ```bash
 docker run --rm openjdk:21-slim java -e "
@@ -611,39 +611,39 @@ O bien, levanta una shell en MS-Auth y genera el hash con un endpoint helper.
 
 ### 9. `docker compose build` se queda colgado descargando dependencias
 
-**Sintoma**: La etapa `mvn dependency:go-offline -B` parece no progresar.
+**Síntoma**: La etapa `mvn dependency:go-offline -B` parece no progresar.
 
-**Causa**: Maven Central o el mirror configurado puede estar lento o caido.
+**Causa**: Maven Central o el mirror configurado puede estar lento o caído.
 
-**Solucion**:
+**Solución**:
 
 ```bash
-# Limpiar cache de Docker y reintentar
+# Limpiar caché de Docker y reintentar
 docker builder prune -f
 docker compose build --no-cache ms-auth
 ```
 
 ### 10. `Manifest unknown` o `pull access denied` al hacer build
 
-**Sintoma**: `docker compose build` falla con `manifest for image:tag not found`.
+**Síntoma**: `docker compose build` falla con `manifest for image:tag not found`.
 
-**Causa**: Docker no puede descargar una imagen base. Suele ser porque la version
-fijada quedo desactualizada o tu Docker Desktop tiene la version 4.20 o anterior
+**Causa**: Docker no puede descargar una imagen base. Suele ser porque la versión
+fijada quedó desactualizada o tu Docker Desktop tiene la versión 4.20 o anterior
 que no soporta ciertos manifest schemas.
 
-**Solucion**:
+**Solución**:
 
-1. Actualiza Docker Desktop a la version mas reciente.
+1. Actualiza Docker Desktop a la versión más reciente.
 2. Si persiste, edita el `Dockerfile` correspondiente y cambia el tag exacto
-   por uno mas generico (por ejemplo `21-jre-alpine` en lugar de `21.0.5_11-jre-alpine`).
+   por uno más genérico (por ejemplo `21-jre-alpine` en lugar de `21.0.5_11-jre-alpine`).
 
 ### 11. Frontend muestra "Network Error" al hacer login
 
-**Sintoma**: La consola del navegador muestra error CORS o `Network Error`.
+**Síntoma**: La consola del navegador muestra error CORS o `Network Error`.
 
-**Causa**: El BFF no esta corriendo o el frontend no encuentra el proxy.
+**Causa**: El BFF no está corriendo o el frontend no encuentra el proxy.
 
-**Solucion**:
+**Solución**:
 
 ```bash
 docker compose ps bff       # debe estar Up
@@ -654,41 +654,41 @@ Si reinicias el BFF, espera 30 segundos antes de reintentar el login.
 
 ### 12. Kafka se reinicia constantemente
 
-**Sintoma**: `kafka` aparece en estado `Restarting` cada 30 segundos.
+**Síntoma**: `kafka` aparece en estado `Restarting` cada 30 segundos.
 
-**Por que Zookeeper y Kafka deben trabajar en conjunto**
+**Por qué Zookeeper y Kafka deben trabajar en conjunto**
 
-Kafka no es un sistema autonomo: necesita un coordinador externo que mantenga el estado
-del cluster. Zookeeper cumple ese rol. Antes de que Kafka pueda recibir o entregar mensajes,
+Kafka no es un sistema autónomo: necesita un coordinador externo que mantenga el estado
+del clúster. Zookeeper cumple ese rol. Antes de que Kafka pueda recibir o entregar mensajes,
 le pregunta a Zookeeper tres cosas fundamentales:
 
-- **Quien soy en el cluster**: Zookeeper asigna y registra el `broker.id` de cada nodo Kafka.
-  Sin ese registro, Kafka no sabe si es el broker primario o un replica.
-- **Cuales topics y particiones existen**: los metadatos de topics (cuantas particiones,
-  factor de replicacion, offsets de lideres) se persisten en Zookeeper. Si Kafka arranca
+- **Quién soy en el clúster**: Zookeeper asigna y registra el `broker.id` de cada nodo Kafka.
+  Sin ese registro, Kafka no sabe si es el broker primario o una réplica.
+- **Cuáles topics y particiones existen**: los metadatos de topics (cuántas particiones,
+  factor de replicación, offsets de líderes) se persisten en Zookeeper. Si Kafka arranca
   sin Zookeeper, no puede leer ni escribir esos metadatos y falla inmediatamente.
-- **Eleccion de lider**: cuando un broker cae, Zookeeper coordina que replica asume el rol
-  de lider de cada particion. Sin Zookeeper, el cluster no puede recuperarse de fallos.
+- **Elección de líder**: cuando un broker cae, Zookeeper coordina qué réplica asume el rol
+  de líder de cada partición. Sin Zookeeper, el clúster no puede recuperarse de fallos.
 
-La relacion es de dependencia estricta: Kafka no tiene logica interna para sustituir a
-Zookeeper (esto cambia a partir de Kafka 3.3+ con el modo KRaft, pero la version usada en
-este proyecto — Confluent 7.7.1, basada en Kafka 3.7 — aun requiere Zookeeper por defecto).
+La relación es de dependencia estricta: Kafka no tiene lógica interna para sustituir a
+Zookeeper (esto cambia a partir de Kafka 3.3+ con el modo KRaft, pero la versión usada en
+este proyecto — Confluent 7.7.1, basada en Kafka 3.7 — aún requiere Zookeeper por defecto).
 
-**Por que Zookeeper debe iniciar primero**
+**Por qué Zookeeper debe iniciar primero**
 
 Al arrancar, Kafka intenta conectarse a Zookeeper en el puerto `2181` durante un tiempo
-limitado (por defecto 6 segundos con hasta 3 reintentos). Si Zookeeper no responde en ese
-ventana, Kafka lanza una excepcion `SessionExpiredException` o `ConnectionLossException`
+limitado (por defecto 6 segundos con hasta 3 reintentos). Si Zookeeper no responde en esa
+ventana, Kafka lanza una excepción `SessionExpiredException` o `ConnectionLossException`
 y el proceso termina. Docker lo detecta como un fallo y reinicia el contenedor, generando
 el loop de `Restarting` que se ve en `docker compose ps`.
 
-El orden correcto garantiza que cuando Kafka hace su primera conexion a `zookeeper:2181`,
-el servidor ya esta escuchando y puede responder al handshake de sesion ZAB (Zookeeper
+El orden correcto garantiza que cuando Kafka hace su primera conexión a `zookeeper:2181`,
+el servidor ya está escuchando y puede responder al handshake de sesión ZAB (Zookeeper
 Atomic Broadcast) sin timeout.
 
-**Causa del error**: Zookeeper no termino de levantar antes de Kafka, o falta memoria.
+**Causa del error**: Zookeeper no terminó de levantar antes de Kafka, o falta memoria.
 
-**Solucion**:
+**Solución**:
 
 ```bash
 docker compose down
@@ -701,9 +701,9 @@ docker compose up -d
 
 ### 13. WSL2 ocupa toda la RAM en Windows
 
-**Sintoma**: Tu laptop se vuelve lenta tras varias horas con Docker Desktop abierto.
+**Síntoma**: Tu laptop se vuelve lenta tras varias horas con Docker Desktop abierto.
 
-**Solucion**: Crear `%UserProfile%\.wslconfig` con:
+**Solución**: Crear `%UserProfile%\.wslconfig` con:
 
 ```ini
 [wsl2]
@@ -717,16 +717,16 @@ Docker Desktop.
 
 ### 14. `vite` no se puede instalar / `EBADENGINE`
 
-**Sintoma**: `npm install` en el frontend falla con error de engine de Node.
+**Síntoma**: `npm install` en el frontend falla con error de engine de Node.
 
 **Causa**: Tu Node local es muy antiguo.
 
-**Solucion**: Usa Node 22 LTS o ejecuta el frontend dentro de Docker
-(`docker compose up -d frontend`) que ya trae la version correcta.
+**Solución**: Usa Node 22 LTS o ejecuta el frontend dentro de Docker
+(`docker compose up -d frontend`) que ya trae la versión correcta.
 
 ### 15. `failed commit on ref ... unexpected commit digest`
 
-**Sintoma**: `docker compose up` falla al descargar capas con mensajes como:
+**Síntoma**: `docker compose up` falla al descargar capas con mensajes como:
 
 ```
 failed commit on ref "layer-sha256:abc...":
@@ -734,30 +734,30 @@ commit failed: unexpected commit digest sha256:xyz...,
 expected sha256:abc...: failed precondition
 ```
 
-**Causa**: una capa quedo corrupta en el cache local de Docker (corte de red,
+**Causa**: una capa quedó corrupta en el caché local de Docker (corte de red,
 disco lleno, bug del containerd snapshotter en Docker Desktop).
 
-**Solucion automatica**:
+**Solución automática**:
 
 ```powershell
-# Windows PowerShell desde la raiz del proyecto
+# Windows PowerShell desde la raíz del proyecto
 .\scripts\fix-docker.ps1
 ```
 
-**Solucion manual paso a paso**:
+**Solución manual paso a paso**:
 
 ```bash
 # 1. Bajar todo
 docker compose down -v
 
-# 2. Limpiar cache de imagenes y builders
+# 2. Limpiar caché de imágenes y builders
 docker system prune -af --volumes
 docker builder prune -af
 
 # 3. Reiniciar Docker Desktop completamente
 #    (Settings > Troubleshoot > Clean / Purge data, o reiniciar el servicio)
 
-# 4. Pre-descargar imagenes una por una (no en paralelo)
+# 4. Pre-descargar imágenes una por una (no en paralelo)
 docker pull postgres:17-alpine
 docker pull confluentinc/cp-kafka:7.7.1
 docker pull confluentinc/cp-zookeeper:7.7.1
@@ -775,14 +775,14 @@ docker compose up -d
 
 **Si el error persiste**: en Docker Desktop ve a Settings > General y
 desactiva "Use containerd for pulling and storing images" (vuelve al
-snapshotter clasico). Reinicia Docker Desktop y reintenta.
+snapshotter clásico). Reinicia Docker Desktop y reintenta.
 
 ### 16. `npm install` falla con `ERESOLVE` en el frontend
 
-**Sintoma**: durante el build del contenedor frontend aparece
+**Síntoma**: durante el build del contenedor frontend aparece
 `ERESOLVE could not resolve` o `peer dep` no compatible.
 
-**Solucion**: el `Dockerfile` ya usa `npm install --legacy-peer-deps` para
+**Solución**: el `Dockerfile` ya usa `npm install --legacy-peer-deps` para
 tolerar conflictos de peer dependencies. Si lo ejecutas localmente, usa el
 mismo flag:
 
@@ -794,35 +794,35 @@ npm run dev
 
 ### 17. `docker exec -it` se cuelga en Git Bash (MINGW64)
 
-**Sintoma**: al ejecutar `docker exec -it postgres-auth psql ...` la consola
+**Síntoma**: al ejecutar `docker exec -it postgres-auth psql ...` la consola
 queda esperando entrada que nunca llega.
 
 **Causa**: Git Bash en Windows usa MinTTY que no es TTY real. El flag `-it`
 no funciona como en Linux.
 
-**Solucion**: usar `winpty` (incluido en Git Bash) o evitar el modo interactivo:
+**Solución**: usar `winpty` (incluido en Git Bash) o evitar el modo interactivo:
 
 ```bash
-# Solucion 1: prefijo winpty
+# Solución 1: prefijo winpty
 winpty docker exec -it postgres-auth psql -U auth_user -d auth_db
 
-# Solucion 2: ejecutar SQL directamente con -c (sin interactividad)
+# Solución 2: ejecutar SQL directamente con -c (sin interactividad)
 docker exec -i postgres-auth psql -U auth_user -d auth_db -c "SELECT * FROM users;"
 
-# Solucion 3: usar PowerShell en vez de Git Bash
+# Solución 3: usar PowerShell en vez de Git Bash
 # (en PowerShell el TTY funciona normalmente)
 ```
 
-### 18. MS-Mensajeria o API Gateway aparecen DOWN aunque levantaron
+### 18. MS-Mensajería o API Gateway aparecen DOWN aunque levantaron
 
-**Sintoma**: `curl http://localhost:8085/actuator/health` retorna 404 o no
+**Síntoma**: `curl http://localhost:8085/actuator/health` retorna 404 o no
 responde, mismo en 8081.
 
 **Causa probable**: el archivo `application.yml` del microservicio no expone
-los endpoints de actuator. Spring Boot por defecto solo expone `/actuator/info`.
+los endpoints de actuator. Spring Boot por defecto sólo expone `/actuator/info`.
 
-**Solucion**: ya esta corregido en el proyecto, pero si modificaste algun yml,
-asegurate que tenga:
+**Solución**: ya está corregido en el proyecto, pero si modificaste algún yml,
+asegúrate que tenga:
 
 ```yaml
 management:
@@ -839,39 +839,39 @@ management:
 
 Y reconstruye la imagen: `docker compose build ms-mensajeria api-gateway && docker compose up -d`.
 
-### 19. Login del frontend muestra "El servicio de autenticacion no esta disponible"
+### 19. Login del frontend muestra "El servicio de autenticación no está disponible"
 
-**Sintoma**: en `http://localhost:3000` el login retorna ese mensaje.
+**Síntoma**: en `http://localhost:3000` el login retorna ese mensaje.
 
 **Causas posibles**:
 
-| Causa | Verificacion | Solucion |
+| Causa | Verificación | Solución |
 |-------|--------------|----------|
-| API Gateway caido | `curl http://localhost:8081/actuator/health` falla | Ver error 18 |
-| MS-Auth no termino de iniciar | `docker compose logs ms-auth` | Esperar 30s mas |
+| API Gateway caído | `curl http://localhost:8081/actuator/health` falla | Ver error 18 |
+| MS-Auth no terminó de iniciar | `docker compose logs ms-auth` | Esperar 30s más |
 | BFF no encuentra Gateway | `docker compose logs bff` muestra `Connection refused` | `docker compose restart bff` |
 | Credenciales incorrectas | Estado HTTP 401 | Usar `admin1 / Admin123!` |
 
 El frontend ahora muestra mensajes diferenciados (401 / 503 / 500 / network)
-para facilitar el diagnostico.
+para facilitar el diagnóstico.
 
 ### 20. `failed to set up container networking: network <id> not found`
 
-**Sintoma**: al levantar la pila uno o mas contenedores fallan con:
+**Síntoma**: al levantar la pila uno o más contenedores fallan con:
 
 ```
 Error response from daemon: failed to set up container networking:
 network 218b51804d31685e5efaf01f27fed965ed4295e4d7ae8045bd53455c112ada66 not found
 ```
 
-**Causa**: la red `fullstack-3_libro-net` quedo huerfana (eliminada mientras
-el compose tenia su ID en cache). Suele pasar cuando:
+**Causa**: la red `fullstack-3_libro-net` quedó huérfana (eliminada mientras
+el compose tenía su ID en caché). Suele pasar cuando:
 
 - Reinicias Docker Desktop con contenedores corriendo.
 - Cambias entre proyectos diferentes que usan compose.
 - Ejecutas `docker network prune` mientras la pila estaba arriba.
 
-**Solucion automatica**:
+**Solución automática**:
 
 ```bash
 # Linux / macOS / Git Bash
@@ -883,7 +883,7 @@ bash scripts/fix-network.sh
 .\scripts\fix-network.ps1
 ```
 
-**Solucion manual**:
+**Solución manual**:
 
 ```bash
 docker compose down --remove-orphans
@@ -892,17 +892,17 @@ docker network rm fullstack-3_libro-net 2>/dev/null || true
 docker compose up -d --force-recreate --remove-orphans
 ```
 
-Si despues de eso sigue fallando: cierra Docker Desktop completamente, borra
-el cache (`%APPDATA%\Docker\` en Windows o `~/Library/Containers/com.docker.docker`
+Si después de eso sigue fallando: cierra Docker Desktop completamente, borra
+el caché (`%APPDATA%\Docker\` en Windows o `~/Library/Containers/com.docker.docker`
 en macOS), reinicia Docker Desktop y vuelve a ejecutar `start-staged`.
 
 > **Nota**: el script `start-staged.sh` / `.ps1` ahora hace esta limpieza
-> automaticamente en su paso [0/6], por lo que rara vez veras este error
+> automáticamente en su paso [0/6], por lo que rara vez verás este error
 > usando el script.
 
 ### 21. Build del frontend falla con `rolldown` o `npm run build` exit code 1
 
-**Sintoma**: el `docker compose build frontend` falla con un stacktrace de
+**Síntoma**: el `docker compose build frontend` falla con un stacktrace de
 `rolldown` o errores como:
 
 ```
@@ -911,13 +911,13 @@ at #build ... rolldown-build-DSxL8qiP.mjs
 process "/bin/sh -c npm run build" did not complete successfully: exit code: 1
 ```
 
-**Causa**: `package.json` quedo con `vite: ^8.0.10` (version pre-release que
-usa rolldown internamente y aun es inestable) o se arrastro un `package-lock.json`
+**Causa**: `package.json` quedó con `vite: ^8.0.10` (versión pre-release que
+usa rolldown internamente y aún es inestable) o se arrastró un `package-lock.json`
 local con dependencias rotas.
 
-**Solucion**:
+**Solución**:
 
-1. **Bajar Vite a una version estable**. En `frontend/package.json` cambia:
+1. **Bajar Vite a una versión estable**. En `frontend/package.json` cambia:
 
    ```json
    "devDependencies": {
@@ -928,16 +928,16 @@ local con dependencias rotas.
 
 2. **Asegurar que el contenedor no copia tu node_modules local**. El proyecto
    ya incluye `frontend/.dockerignore` que excluye `node_modules`, `dist`,
-   `package-lock.json` y caches de Vite/npm.
+   `package-lock.json` y cachés de Vite/npm.
 
-3. **Forzar legacy-peer-deps** via `frontend/.npmrc`:
+3. **Forzar legacy-peer-deps** vía `frontend/.npmrc`:
 
    ```
    legacy-peer-deps=true
    engine-strict=false
    ```
 
-4. **Reconstruir sin cache**:
+4. **Reconstruir sin caché**:
 
    ```bash
    docker compose build --no-cache frontend
@@ -955,7 +955,7 @@ local con dependencias rotas.
 
 ### 22. `NoResourceFoundException: No static resource actuator/prometheus`
 
-**Sintoma**: en los logs del microservicio aparece cada 15 segundos:
+**Síntoma**: en los logs del microservicio aparece cada 15 segundos:
 
 ```
 ERROR ... GlobalExceptionHandler ... Unhandled error
@@ -964,17 +964,17 @@ NoResourceFoundException: No static resource actuator/prometheus
 
 Y Prometheus marca el target como `down`.
 
-**Causa**: el endpoint `/actuator/prometheus` no se materializa solo con
+**Causa**: el endpoint `/actuator/prometheus` no se materializa sólo con
 `spring-boot-starter-actuator`. Necesita la dependencia
 `micrometer-registry-prometheus` que registra el endpoint y formatea las
-metricas en formato OpenMetrics.
+métricas en formato OpenMetrics.
 
-**Diagnostico rapido**: si modificaste el `pom.xml` y el error persiste, lo
-mas probable es que el contenedor sigue corriendo la imagen antigua. Docker
-reusa el cache cuando ve los mismos bytes en el `pom.xml`, asi que un simple
+**Diagnóstico rápido**: si modificaste el `pom.xml` y el error persiste, lo
+más probable es que el contenedor sigue corriendo la imagen antigua. Docker
+reusa el caché cuando ve los mismos bytes en el `pom.xml`, así que un simple
 `docker compose up -d` no rehace el build. Necesitas forzar el rebuild.
 
-**Solucion automatica** (recomendada):
+**Solución automática** (recomendada):
 
 ```bash
 # Linux / macOS / Git Bash
@@ -988,39 +988,39 @@ bash scripts/rebuild-microservicios.sh
 
 Estos scripts:
 1. Detienen los 6 microservicios Java.
-2. Eliminan sus imagenes locales (`docker rmi -f`).
-3. Reconstruyen sin cache (`--no-cache`).
+2. Eliminan sus imágenes locales (`docker rmi -f`).
+3. Reconstruyen sin caché (`--no-cache`).
 4. Levantan los contenedores nuevos.
 5. Verifican `/actuator/prometheus` en los 6 puertos.
 
-**Solucion manual**:
+**Solución manual**:
 
 ```bash
 # Asegurar que el pom.xml tiene la dependencia
 grep -A2 "micrometer-registry-prometheus" ms-auth/pom.xml
 
-# Forzar rebuild sin cache
+# Forzar rebuild sin caché
 docker compose build --no-cache ms-auth ms-academico ms-asistencia ms-mensajeria api-gateway bff
 
 # Recrear contenedores con la imagen nueva
 docker compose up -d --force-recreate ms-auth ms-academico ms-asistencia ms-mensajeria api-gateway bff
 ```
 
-Verificacion despues del rebuild:
+Verificación después del rebuild:
 
 ```bash
 curl http://localhost:8082/actuator/prometheus | head -3
-# Esperado: lineas tipo "# HELP jvm_memory_used_bytes" o "jvm_memory_used_bytes{..."
+# Esperado: líneas tipo "# HELP jvm_memory_used_bytes" o "jvm_memory_used_bytes{..."
 ```
 
 > **Nota adicional**: el `GlobalExceptionHandler` de MS-Auth ahora maneja
 > `NoResourceFoundException` con un log en nivel DEBUG (sin stack trace) en
-> lugar de ERROR. Asi mientras se hace el rebuild no llenas los logs de
-> stack traces de 100+ lineas.
+> lugar de ERROR. Así mientras se hace el rebuild no llenas los logs de
+> stack traces de 100+ líneas.
 
-### 23. `TLS handshake timeout` al descargar imagenes Docker
+### 23. `TLS handshake timeout` al descargar imágenes Docker
 
-**Sintoma**: el `docker compose build` falla con:
+**Síntoma**: el `docker compose build` falla con:
 
 ```
 failed to do request: Head "https://registry-1.docker.io/v2/library/maven/manifests/...":
@@ -1028,17 +1028,17 @@ net/http: TLS handshake timeout
 ```
 
 Y normalmente afecta a una imagen base como `maven:3.9.9-eclipse-temurin-21`,
-mientras que otras (frontend) ya estan en cache y siguen.
+mientras que otras (frontend) ya están en caché y siguen.
 
 **Causas frecuentes**:
 
-- Conexion a internet inestable o saturada.
+- Conexión a internet inestable o saturada.
 - VPN corporativa que interfiere con Docker.
 - DNS de Docker mal configurado.
 - Docker Hub temporalmente lento (suele resolverse en minutos).
-- Antivirus o firewall bloqueando trafico TLS de Docker.
+- Antivirus o firewall bloqueando tráfico TLS de Docker.
 
-**Solucion 1 - script con reintentos** (la mas simple):
+**Solución 1 - script con reintentos** (la más simple):
 
 ```bash
 # Linux / macOS / Git Bash
@@ -1052,12 +1052,12 @@ docker compose build
 docker compose build
 ```
 
-El script descarga manualmente las 13 imagenes base con hasta 5 reintentos
-cada una. Una vez en cache local, el build no necesita ir a Docker Hub.
+El script descarga manualmente las 13 imágenes base con hasta 5 reintentos
+cada una. Una vez en caché local, el build no necesita ir a Docker Hub.
 
-**Solucion 2 - configurar mirror de Docker Hub**
+**Solución 2 - configurar mirror de Docker Hub**
 
-Si el problema persiste (red corporativa, pais con latencia alta), edita
+Si el problema persiste (red corporativa, país con latencia alta), edita
 las **Settings -> Docker Engine** de Docker Desktop y agrega un mirror:
 
 ```json
@@ -1071,21 +1071,21 @@ las **Settings -> Docker Engine** de Docker Desktop y agrega un mirror:
 
 Aplica los cambios (Docker Desktop reinicia el daemon) y vuelve a intentar.
 
-**Solucion 3 - desactivar VPN temporalmente**
+**Solución 3 - desactivar VPN temporalmente**
 
 VPN corporativas suelen romper el TLS handshake con `registry-1.docker.io`.
-Si tu empresa usa Cisco AnyConnect, GlobalProtect, OpenVPN, etc., apagala
-solo durante el `docker pull`/`docker compose build`. Despues puedes
+Si tu empresa usa Cisco AnyConnect, GlobalProtect, OpenVPN, etc., apágala
+sólo durante el `docker pull`/`docker compose build`. Después puedes
 reactivarla.
 
-**Solucion 4 - reintentar simplemente**
+**Solución 4 - reintentar simplemente**
 
 Estos errores suelen ser transitorios. Volver a ejecutar `docker compose build`
-30 a 60 segundos despues funciona en muchos casos.
+30 a 60 segundos después funciona en muchos casos.
 
 ### 24. `Premature end of Content-Length` en build de Maven
 
-**Sintoma**: durante `docker compose build` un microservicio Java falla con:
+**Síntoma**: durante `docker compose build` un microservicio Java falla con:
 
 ```
 Could not transfer artifact org.rocksdb:rocksdbjni:jar:7.9.2
@@ -1094,23 +1094,23 @@ Premature end of Content-Length delimited message body
 (expected: 58,000,372; received: 30,433,856)
 ```
 
-**Causa**: la conexion a Maven Central se corto a mitad de la descarga del JAR
-de `rocksdbjni` (58 MB, requerido por Spring Kafka). Es comun con redes lentas,
+**Causa**: la conexión a Maven Central se cortó a mitad de la descarga del JAR
+de `rocksdbjni` (58 MB, requerido por Spring Kafka). Es común con redes lentas,
 saturadas, o con VPN corporativa.
 
 **Soluciones**:
 
-1. **Configuracion robusta en Dockerfile** (ya aplicada en el proyecto). Todos
+1. **Configuración robusta en Dockerfile** (ya aplicada en el proyecto). Todos
    los Dockerfile Java tienen ahora:
    - `MAVEN_OPTS` con timeouts largos (5 min connect, 15 min request) y
      hasta 10 reintentos por descarga.
    - Comando `mvn -B dependency:go-offline` ejecutado **3 veces seguidas** con
      `||` para que el build tolere fallos transitorios.
    - **BuildKit cache mount** `--mount=type=cache,target=/root/.m2` que
-     persiste el repositorio Maven entre builds. Asi `rocksdbjni` solo se
-     descarga una vez y nunca mas.
+     persiste el repositorio Maven entre builds. Así `rocksdbjni` sólo se
+     descarga una vez y nunca más.
 
-2. **Habilitar BuildKit** (Docker Desktop 24+ ya lo tiene por default). Si no:
+2. **Habilitar BuildKit** (Docker Desktop 24+ ya lo tiene por defecto). Si no:
 
    ```powershell
    # Windows PowerShell
@@ -1124,15 +1124,15 @@ saturadas, o con VPN corporativa.
    docker compose build
    ```
 
-3. **Pre-descargar la dependencia problematica fuera de Docker** y montarla
+3. **Pre-descargar la dependencia problemática fuera de Docker** y montarla
    como volumen. Si tienes Maven local:
 
    ```bash
    mvn -f ms-auth/pom.xml dependency:get -Dartifact=org.rocksdb:rocksdbjni:7.9.2
    ```
 
-4. **Usar mirror de Maven**. Crea `~/.m2/settings.xml` (en tu maquina) con un
-   mirror mas cercano, por ejemplo Aliyun (Asia) o cualquier mirror corporativo:
+4. **Usar mirror de Maven**. Crea `~/.m2/settings.xml` (en tu máquina) con un
+   mirror más cercano, por ejemplo Aliyun (Asia) o cualquier mirror corporativo:
 
    ```xml
    <settings>
@@ -1147,30 +1147,30 @@ saturadas, o con VPN corporativa.
    </settings>
    ```
 
-5. **Reintentar simplemente**. El cache mount hace que solo lo que falto se
+5. **Reintentar simplemente**. El cache mount hace que sólo lo que faltó se
    re-descargue. Tras una primera descarga exitosa parcial, el siguiente
-   `docker compose build` retoma desde donde quedo.
+   `docker compose build` retoma desde donde quedó.
 
-### 25. Despues de `docker compose down -v` perdi mis usuarios
+### 25. Después de `docker compose down -v` perdí mis usuarios
 
-**Sintoma**: Despues de bajar la pila con `-v`, los usuarios creados desaparecieron.
+**Síntoma**: Después de bajar la pila con `-v`, los usuarios creados desaparecieron.
 
-**Causa**: La opcion `-v` borra los volumenes nominados, incluyendo los datos
+**Causa**: La opción `-v` borra los volúmenes nominados, incluyendo los datos
 de Postgres.
 
-**Solucion**: No es un error, es lo esperado. Para preservar datos usa solo
+**Solución**: No es un error, es lo esperado. Para preservar datos usa sólo
 `docker compose down` (sin `-v`). Para resetear el entorno desde cero, `down -v`
 es el comando correcto.
 
 ## Pruebas Unitarias
 
 El proyecto incluye **15 pruebas** distribuidas en 4 microservicios: 13 pruebas unitarias con
-Mockito (sin levantar contexto Spring) y 2 pruebas de integracion Kafka con broker embebido.
+Mockito (sin levantar contexto Spring) y 2 pruebas de integración Kafka con broker embebido.
 Todas usan JUnit 5 + AssertJ.
 
 ### Inventario de pruebas
 
-| # | Microservicio | Clase | Descripcion |
+| # | Microservicio | Clase | Descripción |
 |---|---------------|-------|-------------|
 | 1 | ms-auth | `AuthServiceTest` | Login exitoso retorna token y datos del usuario |
 | 2 | ms-auth | `AuthServiceTest` | Password incorrecto lanza `BadCredentialsException` |
@@ -1180,17 +1180,17 @@ Todas usan JUnit 5 + AssertJ.
 | 6 | ms-auth | `UserAdminServiceTest` | Listar usuarios retorna lista completa mapeada a DTO |
 | 7 | ms-auth | `UserAdminServiceTest` | Eliminar ID inexistente lanza `404 NOT FOUND` sin llamar a `deleteById` |
 | 8 | ms-auth | `UserAdminServiceTest` | Actualizar roles persiste el nuevo conjunto de roles |
-| 9 | ms-asistencia | `AsistenciaServiceTest` | Estado PRESENTE no publica ningun evento en Kafka |
+| 9 | ms-asistencia | `AsistenciaServiceTest` | Estado PRESENTE no publica ningún evento en Kafka |
 | 10 | ms-asistencia | `AsistenciaServiceTest` | Estado AUSENTE publica `InasistenciaEvent` en el topic correcto |
-| 11 | ms-academico | `NotaServiceTest` | Crear nota valida persiste entidad y retorna DTO correcto |
+| 11 | ms-academico | `NotaServiceTest` | Crear nota válida persiste entidad y retorna DTO correcto |
 | 12 | ms-academico | `NotaServiceTest` | Consultar notas de alumno retorna lista ordenada |
-| 13 | ms-academico | `NotaServiceTest` | Alumno sin notas retorna lista vacia (sin NullPointerException) |
-| 14 | ms-asistencia | `KafkaZookeeperIntegrationTest` | Broker Kafka con Zookeeper embebido esta activo y accesible |
+| 13 | ms-academico | `NotaServiceTest` | Alumno sin notas retorna lista vacía (sin NullPointerException) |
+| 14 | ms-asistencia | `KafkaZookeeperIntegrationTest` | Broker Kafka con Zookeeper embebido está activo y accesible |
 | 15 | ms-asistencia | `KafkaZookeeperIntegrationTest` | Ciclo completo productor -> topic -> consumidor entrega mensaje intacto |
 
-### Como ejecutar las pruebas
+### Cómo ejecutar las pruebas
 
-#### Todos los microservicios a la vez (desde la raiz del proyecto)
+#### Todos los microservicios a la vez (desde la raíz del proyecto)
 
 ```bash
 mvn -pl ms-auth,ms-academico,ms-asistencia test
@@ -1199,17 +1199,17 @@ mvn -pl ms-auth,ms-academico,ms-asistencia test
 #### Por microservicio individual
 
 ```bash
-# Solo MS-Auth (pruebas 1-8)
+# Sólo MS-Auth (pruebas 1-8)
 mvn -f ms-auth/pom.xml test
 
-# Solo MS-Academico (pruebas 11-13)
+# Sólo MS-Académico (pruebas 11-13)
 mvn -f ms-academico/pom.xml test
 
-# Solo MS-Asistencia (pruebas 9-10 + 14-15)
+# Sólo MS-Asistencia (pruebas 9-10 + 14-15)
 mvn -f ms-asistencia/pom.xml test
 ```
 
-#### Solo una clase especifica
+#### Sólo una clase específica
 
 ```bash
 mvn -f ms-auth/pom.xml test -Dtest=AuthServiceTest
@@ -1219,7 +1219,7 @@ mvn -f ms-asistencia/pom.xml test -Dtest=KafkaZookeeperIntegrationTest
 mvn -f ms-academico/pom.xml test -Dtest=NotaServiceTest
 ```
 
-#### Solo un test especifico
+#### Sólo un test específico
 
 ```bash
 mvn -f ms-auth/pom.xml test -Dtest="AuthServiceTest#login_credencialesValidas_retornaTokenYDatosUsuario"
@@ -1237,7 +1237,7 @@ docker run --rm \
 
 ### Resultado esperado
 
-Una ejecucion exitosa completa muestra al final de cada modulo:
+Una ejecución exitosa completa muestra al final de cada módulo:
 
 ```
 [INFO] -------------------------------------------------------
@@ -1251,7 +1251,7 @@ Una ejecucion exitosa completa muestra al final de cada modulo:
 [INFO] BUILD SUCCESS
 ```
 
-Para MS-Asistencia, la prueba de integracion Kafka tarda entre 5 y 15 segundos en levantar
+Para MS-Asistencia, la prueba de integración Kafka tarda entre 5 y 15 segundos en levantar
 el broker embebido; es normal ver logs de Kafka durante ese tiempo:
 
 ```
@@ -1263,7 +1263,7 @@ el broker embebido; es normal ver logs de Kafka durante ese tiempo:
 [INFO] BUILD SUCCESS
 ```
 
-Resumen consolidado al ejecutar los tres modulos juntos: **15 pruebas, 0 fallos, 0 errores**.
+Resumen consolidado al ejecutar los tres módulos juntos: **15 pruebas, 0 fallos, 0 errores**.
 
 ### Errores comunes en pruebas y soluciones
 
@@ -1274,9 +1274,9 @@ Resumen consolidado al ejecutar los tres modulos juntos: **15 pruebas, 0 fallos,
 Perhaps you are running on a JRE rather than a JDK?
 ```
 
-**Causa**: Maven no encuentra el JDK, solo hay JRE instalado.
+**Causa**: Maven no encuentra el JDK, sólo hay JRE instalado.
 
-**Solucion**:
+**Solución**:
 ```bash
 # Verificar que es JDK (no JRE)
 java -version       # debe mostrar "openjdk" o "temurin"
@@ -1297,15 +1297,15 @@ symbol:   class NotaRequest
 location: class NotaServiceTest
 ```
 
-**Causa**: el codigo del servicio tiene cambios que no reflejan los tests, o los tests
-estan fuera de la estructura de paquetes correcta.
+**Causa**: el código del servicio tiene cambios que no reflejan los tests, o los tests
+están fuera de la estructura de paquetes correcta.
 
-**Solucion**:
+**Solución**:
 ```bash
 mvn -f ms-academico/pom.xml clean test
 ```
 
-Si el error persiste, verificar que los tests estan en
+Si el error persiste, verificar que los tests están en
 `src/test/java/com/colegio/<microservicio>/...` y no en otro directorio.
 
 #### Error 3: `Mockito cannot mock this class`
@@ -1315,11 +1315,11 @@ Si el error persiste, verificar que los tests estan en
 Cannot mock/spy class com.colegio.auth.repository.UserRepository
 ```
 
-**Causa**: version incompatible de Mockito o byte-buddy por declarar Mockito manualmente
-en el `pom.xml` ademas de `spring-boot-starter-test`.
+**Causa**: versión incompatible de Mockito o byte-buddy por declarar Mockito manualmente
+en el `pom.xml` además de `spring-boot-starter-test`.
 
-**Solucion**: No declarar Mockito manualmente; Spring Boot ya lo incluye en la version
-correcta via `spring-boot-starter-test`. Verificar que no hay exclusiones accidentales:
+**Solución**: No declarar Mockito manualmente; Spring Boot ya lo incluye en la versión
+correcta vía `spring-boot-starter-test`. Verificar que no hay exclusiones accidentales:
 
 ```xml
 <dependency>
@@ -1336,10 +1336,10 @@ correcta via `spring-boot-starter-test`. Verificar que no hay exclusiones accide
 Failed to create new KafkaAdminClient ... Address already in use: localhost:9092
 ```
 
-**Causa**: el broker Kafka de Docker Compose esta corriendo en `localhost:9092` y
+**Causa**: el broker Kafka de Docker Compose está corriendo en `localhost:9092` y
 `@EmbeddedKafka` intenta usar el mismo puerto.
 
-**Solucion**: detener el broker Kafka de Docker antes de correr la prueba:
+**Solución**: detener el broker Kafka de Docker antes de correr la prueba:
 
 ```bash
 docker compose stop kafka zookeeper
@@ -1354,10 +1354,10 @@ docker compose start kafka zookeeper
 Condition not fulfilled within 10000 milliseconds
 ```
 
-**Causa**: el broker embebido tardo mas de 10 segundos en levantar. Ocurre en maquinas
-con poca RAM o en el primer build cuando los JARs de Kafka no estan en cache.
+**Causa**: el broker embebido tardó más de 10 segundos en levantar. Ocurre en máquinas
+con poca RAM o en el primer build cuando los JARs de Kafka no están en caché.
 
-**Solucion**: ejecutar el test una segunda vez; la cache de la JVM lo resuelve:
+**Solución**: ejecutar el test una segunda vez; la caché de la JVM lo resuelve:
 
 ```bash
 mvn -f ms-asistencia/pom.xml test -Dtest=KafkaZookeeperIntegrationTest
@@ -1372,10 +1372,10 @@ Unnecessary stubbings detected ...
 ```
 
 **Causa**: Mockito en modo estricto detecta un `when(...)` declarado en `@BeforeEach`
-que no fue usado por todos los metodos de test.
+que no fue usado por todos los métodos de test.
 
-**Solucion**: mover el stub al test especifico que lo necesita, o anotar la clase con
-`@MockitoSettings` para relajar la estrictez solo donde sea necesario:
+**Solución**: mover el stub al test específico que lo necesita, o anotar la clase con
+`@MockitoSettings` para relajar la estrictez sólo donde sea necesario:
 
 ```java
 @ExtendWith(MockitoExtension.class)
@@ -1385,9 +1385,9 @@ class AuthServiceTest { ... }
 
 ## Frontend React
 
-El frontend es una SPA con React 18 + Vite, ruteo con react-router-dom, sesion en
-sessionStorage y un cliente axios centralizado. Se integra con el BFF a traves del
-prefijo `/bff` (proxy de Vite en desarrollo y proxy de Nginx en produccion).
+El frontend es una SPA con React 18 + Vite, ruteo con react-router-dom, sesión en
+sessionStorage y un cliente axios centralizado. Se integra con el BFF a través del
+prefijo `/bff` (proxy de Vite en desarrollo y proxy de Nginx en producción).
 
 ### Estructura del frontend
 
@@ -1400,16 +1400,16 @@ frontend/
 ├── index.html
 └── src/
     ├── main.jsx               # Bootstrap de la SPA y rutas
-    ├── styles/global.css      # Sistema de diseno (variables, componentes base)
+    ├── styles/global.css      # Sistema de diseño (variables, componentes base)
     ├── api/client.js          # Cliente axios con interceptores
-    ├── auth/session.js        # Helpers de sesion JWT
+    ├── auth/session.js        # Helpers de sesión JWT
     ├── components/
-    │   ├── Layout.jsx         # Header con navegacion y datos del usuario
+    │   ├── Layout.jsx         # Header con navegación y datos del usuario
     │   └── ProtectedRoute.jsx # HOC que protege rutas privadas
     └── pages/
         ├── Login.jsx          # Formulario de login con validaciones
         ├── Dashboard.jsx      # Contenedor con sub-rutas
-        ├── Home.jsx           # Tiles de accesos rapidos por rol
+        ├── Home.jsx           # Tiles de accesos rápidos por rol
         ├── Asistencia.jsx     # Registro de asistencia con historial local
         ├── Notas.jsx          # Captura de notas (escala 1.0 a 7.0)
         └── Reportes.jsx       # Descarga de PDF
@@ -1417,7 +1417,7 @@ frontend/
 
 ### Modo desarrollo (con hot-reload)
 
-Util cuando estas iterando sobre la UI sin tener que reconstruir el contenedor.
+Útil cuando estás iterando sobre la UI sin tener que reconstruir el contenedor.
 Requiere Node.js 22 LTS instalado y el BFF corriendo (Docker o local).
 
 ```bash
@@ -1427,7 +1427,7 @@ npm run dev
 # http://localhost:3000 con hot-reload
 ```
 
-### Build de produccion local
+### Build de producción local
 
 ```bash
 cd frontend
@@ -1445,20 +1445,20 @@ docker compose up -d --build frontend
 
 ### Roles soportados en la UI
 
-| Modulo | Roles permitidos |
+| Módulo | Roles permitidos |
 |--------|------------------|
 | Asistencia | DOCENTE, ADMIN |
 | Notas | DOCENTE, ADMIN |
 | Reportes PDF | DOCENTE, ADMIN, APODERADO |
-| Gestion de Usuarios | ADMIN |
+| Gestión de Usuarios | ADMIN |
 
-### Gestion de usuarios (solo ADMIN)
+### Gestión de usuarios (sólo ADMIN)
 
 El usuario `admin1` puede crear nuevos docentes y apoderados desde el frontend
-(`Dashboard -> Usuarios`) o por API. Los endpoints estan protegidos con
+(`Dashboard -> Usuarios`) o por API. Los endpoints están protegidos con
 `@PreAuthorize("hasRole('ADMIN')")` y validados en MS-Auth.
 
-Ejemplo de creacion via API:
+Ejemplo de creación vía API:
 
 ```bash
 # 1. Login como admin
@@ -1486,9 +1486,9 @@ curl -X DELETE -H "Authorization: Bearer $TOKEN" \
   http://localhost:8080/bff/admin/users/4
 ```
 
-Endpoints expuestos por MS-Auth para gestion (todos protegidos por ROLE_ADMIN):
+Endpoints expuestos por MS-Auth para gestión (todos protegidos por ROLE_ADMIN):
 
-| Metodo | Path | Proposito |
+| Método | Path | Propósito |
 |--------|------|-----------|
 | POST | `/admin/users` | Crear usuario con roles |
 | GET | `/admin/users` | Listar todos los usuarios |
@@ -1509,7 +1509,7 @@ Antes hay que reemplazar `REEMPLAZAR_CON_EL_CONTENIDO_DE_public_key.pem` en
 
 ### Despliegue en Kubernetes
 
-#### 1. Construir y publicar todas las imagenes
+#### 1. Construir y publicar todas las imágenes
 
 ##### Linux / macOS / Git Bash
 
@@ -1535,8 +1535,8 @@ docker compose build
 }
 ```
 
-> Nota sobre el nombre de la imagen: Docker Compose nombra las imagenes
-> construidas como `<carpeta-padre>-<servicio>:latest`. Si tu carpeta raiz
+> Nota sobre el nombre de la imagen: Docker Compose nombra las imágenes
+> construidas como `<carpeta-padre>-<servicio>:latest`. Si tu carpeta raíz
 > no se llama `fullstack-3`, ajusta el prefijo. Verifica con `docker images`.
 
 #### 2. Crear namespace, secrets y aplicar manifests
@@ -1544,8 +1544,8 @@ docker compose build
 ```bash
 kubectl apply -f k8s/namespace.yaml
 
-# Los Secrets con credenciales de Postgres ya estan dentro de k8s/postgres.yaml
-# (usando stringData). Para produccion reemplazalos con un secret manager
+# Los Secrets con credenciales de Postgres ya están dentro de k8s/postgres.yaml
+# (usando stringData). Para producción reemplázalos con un secret manager
 # externo (Sealed Secrets, External Secrets, Vault, AWS SM, Azure KV).
 
 kubectl apply -f k8s/postgres.yaml
@@ -1606,31 +1606,31 @@ Fullstack 3/
 
 Se adopta Git Flow:
 
-- `main`: releases estables, taggeadas (vX.Y.Z).
-- `develop`: integracion continua de features.
+- `main`: releases estables, etiquetadas (vX.Y.Z).
+- `develop`: integración continua de features.
 - `feature/<ticket>-descripcion`: nuevas funcionalidades.
-- `release/X.Y.Z`: estabilizacion previa al deploy a main.
-- `hotfix/<ticket>`: correcciones criticas en produccion.
+- `release/X.Y.Z`: estabilización previa al deploy a main.
+- `hotfix/<ticket>`: correcciones críticas en producción.
 
-Convencion de commits: Conventional Commits (`feat:`, `fix:`, `docs:`, `chore:`, `refactor:`).
+Convención de commits: Conventional Commits (`feat:`, `fix:`, `docs:`, `chore:`, `refactor:`).
 
-## Justificacion Tecnica
+## Justificación Técnica
 
-**Spring Boot + JPA**: estandar empresarial Java, reduce boilerplate, ecosistema maduro.
+**Spring Boot + JPA**: estándar empresarial Java, reduce boilerplate, ecosistema maduro.
 
 **Database-per-Service**: evita acoplamiento de esquema, permite escalar y versionar
 cada microservicio de forma independiente (Bounded Context, DDD).
 
-**JWT RS256**: firma asimetrica permite que el Gateway valide tokens sin compartir
-el secreto. MS-Auth firma con clave privada; los demas validan con la publica.
+**JWT RS256**: firma asimétrica permite que el Gateway valide tokens sin compartir
+el secreto. MS-Auth firma con clave privada; los demás validan con la pública.
 
 **Kafka**: desacopla productores de consumidores, persiste eventos, permite reproducir.
 
 **API Gateway + BFF**: el Gateway centraliza cross-cutting concerns. El BFF compone
 respuestas para la UI. Se ofrecen dos implementaciones (SCG y Kong).
 
-**Resilience4j**: circuit breaker, retry y bulkhead modernos con buena integracion
+**Resilience4j**: circuit breaker, retry y bulkhead modernos con buena integración
 en Micrometer.
 
-**ELK + Prometheus/Grafana**: separacion logs/metricas siguiendo mejores practicas
+**ELK + Prometheus/Grafana**: separación logs/métricas siguiendo mejores prácticas
 de observabilidad.
