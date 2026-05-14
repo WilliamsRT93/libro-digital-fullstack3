@@ -656,7 +656,37 @@ Si reinicias el BFF, espera 30 segundos antes de reintentar el login.
 
 **Sintoma**: `kafka` aparece en estado `Restarting` cada 30 segundos.
 
-**Causa**: Zookeeper no termino de levantar antes de Kafka, o falta memoria.
+**Por que Zookeeper y Kafka deben trabajar en conjunto**
+
+Kafka no es un sistema autonomo: necesita un coordinador externo que mantenga el estado
+del cluster. Zookeeper cumple ese rol. Antes de que Kafka pueda recibir o entregar mensajes,
+le pregunta a Zookeeper tres cosas fundamentales:
+
+- **Quien soy en el cluster**: Zookeeper asigna y registra el `broker.id` de cada nodo Kafka.
+  Sin ese registro, Kafka no sabe si es el broker primario o un replica.
+- **Cuales topics y particiones existen**: los metadatos de topics (cuantas particiones,
+  factor de replicacion, offsets de lideres) se persisten en Zookeeper. Si Kafka arranca
+  sin Zookeeper, no puede leer ni escribir esos metadatos y falla inmediatamente.
+- **Eleccion de lider**: cuando un broker cae, Zookeeper coordina que replica asume el rol
+  de lider de cada particion. Sin Zookeeper, el cluster no puede recuperarse de fallos.
+
+La relacion es de dependencia estricta: Kafka no tiene logica interna para sustituir a
+Zookeeper (esto cambia a partir de Kafka 3.3+ con el modo KRaft, pero la version usada en
+este proyecto — Confluent 7.7.1, basada en Kafka 3.7 — aun requiere Zookeeper por defecto).
+
+**Por que Zookeeper debe iniciar primero**
+
+Al arrancar, Kafka intenta conectarse a Zookeeper en el puerto `2181` durante un tiempo
+limitado (por defecto 6 segundos con hasta 3 reintentos). Si Zookeeper no responde en ese
+ventana, Kafka lanza una excepcion `SessionExpiredException` o `ConnectionLossException`
+y el proceso termina. Docker lo detecta como un fallo y reinicia el contenedor, generando
+el loop de `Restarting` que se ve en `docker compose ps`.
+
+El orden correcto garantiza que cuando Kafka hace su primera conexion a `zookeeper:2181`,
+el servidor ya esta escuchando y puede responder al handshake de sesion ZAB (Zookeeper
+Atomic Broadcast) sin timeout.
+
+**Causa del error**: Zookeeper no termino de levantar antes de Kafka, o falta memoria.
 
 **Solucion**:
 
