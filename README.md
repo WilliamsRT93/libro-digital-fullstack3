@@ -4,6 +4,29 @@ Sistema de microservicios para gestión académica escolar: autenticación, nota
 mensajería y reportes PDF. Arquitectura event-driven con Kafka, segura con JWT y observable
 con ELK + Prometheus/Grafana.
 
+## Requisitos de entorno local
+
+Antes de clonar y ejecutar el proyecto, asegúrate de tener instalado:
+
+| Herramienta | Versión mínima | Notas |
+|---|---|---|
+| JDK | 21 (LTS) | `javac -version` debe mostrar `21.x`. Recomendado: Eclipse Temurin 21 |
+| Maven | 3.8+ | Usar el Maven del sistema (`/usr/bin/mvn`), no el bundled de IntelliJ |
+| Docker Desktop | 24+ | BuildKit activado por defecto en 24+ |
+| Node.js | 18+ | Solo necesario si vas a desarrollar el frontend fuera de Docker |
+| Git | 2.x | SSH configurado para el repositorio |
+
+> **JDK 21 en Ubuntu/Debian:** `sudo apt install openjdk-21-jdk` y luego
+> `sudo update-alternatives --config javac` para seleccionarlo como predeterminado.
+> Si `javac -version` muestra JDK 17, las compilaciones con Lombok fallarán.
+
+Archivos que debes crear localmente (no se incluyen en el repositorio):
+
+```bash
+cp .env.example .env          # variables de entorno del stack
+./scripts/reset-keys.sh       # genera claves RSA en ms-auth/src/main/resources/keys/
+```
+
 ## Stack Tecnológico
 
 | Capa | Tecnología | Versión |

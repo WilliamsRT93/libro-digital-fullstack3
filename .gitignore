@@ -258,38 +258,3 @@ allure-report/
 scripts/
 Documentacion/
 docs/
-skills/
-skills-lock.json
-
-# =============================================================================
-# Asistentes de IA y contexto de sesion (NUNCA subir al repositorio)
-# =============================================================================
-CLAUDE.md
-**/CLAUDE.md
-.claude/
-BITACORA_DESARROLLO.md
-BITACORA_*.md
-bitacora*.md
-bitacora*.txt
-PROMPT_CORRECCIONES.md
-PROMPT_*.md
-prompt_*.md
-ARCHITECTURE_DECISIONS.md
-cowork-context.*
-.cowork/
-cowork/
-*.cowork
-memory/
-.memory/
-agent-context.*
-session-context.*
-*-session.json
-.agents/
-**/.agents/
-agent/
-**/agent/
-.scripts/
-**/.scripts/
-*_generado_por_ia*
-*_ai_context*
-*_llm_context*
