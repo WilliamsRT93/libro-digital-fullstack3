@@ -1168,6 +1168,81 @@ El proyecto incluye **15 pruebas** distribuidas en 4 microservicios: 13 pruebas 
 Mockito (sin levantar contexto Spring) y 2 pruebas de integración Kafka con broker embebido.
 Todas usan JUnit 5 + AssertJ.
 
+### Estructura de pruebas (estándar Maven)
+
+Cada microservicio contiene sus pruebas **dentro** del propio módulo, siguiendo la convención
+estándar de Maven para proyectos Spring Boot:
+
+```
+ms-auth/
+└── src/
+    ├── main/java/com/colegio/auth/
+    │   ├── controller/      AuthController.java
+    │   ├── service/         AuthService.java  UserAdminService.java
+    │   ├── repository/      UserRepository.java
+    │   └── security/        JwtService.java
+    └── test/java/com/colegio/auth/
+        └── service/
+            ├── AuthServiceTest.java        ← Tests 1-3
+            └── UserAdminServiceTest.java   ← Tests 4-8
+
+ms-academico/
+└── src/
+    ├── main/java/com/colegio/academico/
+    │   └── service/         NotaService.java
+    └── test/java/com/colegio/academico/
+        └── service/
+            └── NotaServiceTest.java        ← Tests 9-11 (ver nota abajo*)
+
+ms-asistencia/
+└── src/
+    ├── main/java/com/colegio/asistencia/
+    │   └── service/         AsistenciaService.java
+    └── test/java/com/colegio/asistencia/
+        ├── service/
+        │   └── AsistenciaServiceTest.java  ← Tests 12-13
+        └── kafka/
+            └── KafkaZookeeperIntegrationTest.java ← Tests 14-15
+```
+
+> *La carpeta `Pruebas Unitarias/` en la raíz del repositorio contiene **copias de referencia**
+> de los mismos archivos de test. Las pruebas que ejecuta Maven son siempre las que están
+> dentro de `src/test/` de cada microservicio, no las de esa carpeta.
+
+> **Nota sobre el comando:** las pruebas del backend usan **Spring Boot + Maven**, no Node.js.
+> El comando correcto es `mvn test` (no `npm test`, que corresponde al frontend React).
+
+### Cobertura JaCoCo (resultados reales)
+
+JaCoCo 0.8.11 está configurado en los `pom.xml` de `ms-auth`, `ms-academico` y `ms-asistencia`.
+Ejecución verificada con JDK 21.0.11 + Maven 3.8.7:
+
+| Microservicio | Clase | Líneas | Ramas | Estado |
+|---|---|---|---|---|
+| ms-auth | AuthService | **100%** | **100%** | ✓ PASA |
+| ms-auth | UserAdminService | **75%** | **75%** | ✓ PASA |
+| ms-academico | NotaService | **100%** | N/A | ✓ PASA |
+| ms-asistencia | AsistenciaService | **100%** | **100%** | ✓ PASA |
+
+Para generar el reporte HTML de cobertura:
+
+```bash
+mvn -f ms-auth/pom.xml test
+# Reporte en: ms-auth/target/site/jacoco/index.html
+
+mvn -f ms-academico/pom.xml test
+# Reporte en: ms-academico/target/site/jacoco/index.html
+
+mvn -f ms-asistencia/pom.xml test -Dtest=AsistenciaServiceTest -Dsurefire.failIfNoSpecifiedTests=false
+# Reporte en: ms-asistencia/target/site/jacoco/index.html
+```
+
+**Requisito de entorno:** `javac -version` debe mostrar JDK 21. Si muestra JDK 17 o inferior:
+```bash
+sudo apt install -y openjdk-21-jdk
+sudo update-alternatives --config javac  # seleccionar java-21
+```
+
 ### Inventario de pruebas
 
 | # | Microservicio | Clase | Descripción |
