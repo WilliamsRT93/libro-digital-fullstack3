@@ -1,36 +1,39 @@
-// Helpers de sesion. Centraliza la lectura/escritura del JWT y los roles.
-// Almacenamiento en sessionStorage: el token desaparece al cerrar la pestania.
+// Helpers de sesion — SSR-safe para Next.js.
+// sessionStorage solo existe en el navegador; los guards typeof window
+// evitan errores durante el pre-render del servidor.
 
 const TOKEN_KEY = "jwt";
 const ROLES_KEY = "roles";
-const USER_KEY = "username";
+const USER_KEY  = "username";
+
+function isBrowser() { return typeof window !== "undefined"; }
 
 export function saveSession({ token, roles, username }) {
+  if (!isBrowser()) return;
   sessionStorage.setItem(TOKEN_KEY, token);
   sessionStorage.setItem(ROLES_KEY, JSON.stringify(roles || []));
   sessionStorage.setItem(USER_KEY, username || "");
 }
 
 export function clearSession() {
+  if (!isBrowser()) return;
   sessionStorage.removeItem(TOKEN_KEY);
   sessionStorage.removeItem(ROLES_KEY);
   sessionStorage.removeItem(USER_KEY);
 }
 
 export function getToken() {
-  return sessionStorage.getItem(TOKEN_KEY);
+  return isBrowser() ? sessionStorage.getItem(TOKEN_KEY) : null;
 }
 
 export function getRoles() {
-  try {
-    return JSON.parse(sessionStorage.getItem(ROLES_KEY) || "[]");
-  } catch {
-    return [];
-  }
+  if (!isBrowser()) return [];
+  try { return JSON.parse(sessionStorage.getItem(ROLES_KEY) || "[]"); }
+  catch { return []; }
 }
 
 export function getUsername() {
-  return sessionStorage.getItem(USER_KEY) || "";
+  return isBrowser() ? (sessionStorage.getItem(USER_KEY) || "") : "";
 }
 
 export function isAuthenticated() {

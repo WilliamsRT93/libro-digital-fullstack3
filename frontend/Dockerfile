@@ -1,24 +1,24 @@
-# Build multi-etapa: compilacion del frontend con Node 22 LTS y servido con Nginx 1.27
-FROM node:22-alpine AS build
+# syntax=docker/dockerfile:1.6
+FROM node:22-alpine AS builder
 WORKDIR /app
 
-# Copiamos solo los manifests primero para aprovechar cache de Docker
 COPY package.json .npmrc ./
+RUN npm install --legacy-peer-deps --no-audit --no-fund
 
-# Limpieza de cache previo + instalacion con peer-deps permisivos.
-# Si existiera package-lock.json local con vite 8 (inestable), lo ignoramos
-# por el .dockerignore para evitar arrastrar resoluciones rotas.
-RUN npm cache clean --force \
- && npm install --legacy-peer-deps --no-audit --no-fund
-
-# Ahora copiamos el codigo fuente y construimos
 COPY . .
 RUN npm run build
 
-# Imagen final liviana basada en Nginx
-FROM nginx:1.27-alpine
-COPY --from=build /app/dist /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-EXPOSE 80
+FROM node:22-alpine
+WORKDIR /app
+
+ENV NODE_ENV=production
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
+
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+
+EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=5s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:80/ || exit 1
+  CMD wget --no-verbose --tries=1 --spider http://localhost:3000/ || exit 1
+CMD ["node", "server.js"]

@@ -2,11 +2,10 @@ import axios from "axios";
 import { getToken, clearSession } from "../auth/session.js";
 
 // Cliente HTTP centralizado.
-// Inyecta el header Authorization en cada request si hay un token y maneja
-// expiraciones de sesion (401) limpiando el storage y forzando login.
+// En Next.js el proxy /api/v1/bff/* hacia el BFF se configura en next.config.js (rewrites).
 const client = axios.create({
   baseURL: "/api/v1/bff",
-  timeout: 10000
+  timeout: 10000,
 });
 
 client.interceptors.request.use((config) => {
@@ -18,10 +17,9 @@ client.interceptors.request.use((config) => {
 client.interceptors.response.use(
   (res) => res,
   (err) => {
-    // Si el token expiro o es invalido, limpiamos sesion y redirigimos a login.
     if (err.response && err.response.status === 401) {
       clearSession();
-      if (window.location.pathname !== "/") {
+      if (typeof window !== "undefined" && window.location.pathname !== "/") {
         window.location.assign("/");
       }
     }

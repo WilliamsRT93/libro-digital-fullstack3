@@ -1,4 +1,4 @@
-/* Reset minimo y variables de diseño */
+/* Reset minimo y variables de diseno */
 :root {
   --color-primary: #1e40af;
   --color-primary-hover: #1d4ed8;
@@ -19,7 +19,7 @@
 
 * { box-sizing: border-box; }
 
-html, body, #root {
+html, body {
   margin: 0;
   padding: 0;
   height: 100%;
