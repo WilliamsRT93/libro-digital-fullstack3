@@ -43,6 +43,16 @@
                 <execution><id>prepare-agent</id><goals><goal>prepare-agent</goal></goals></execution>
                 <execution><id>report</id><phase>test</phase><goals><goal>report</goal></goals></execution>
             </executions>
+            <configuration>
+                <excludes>
+                    <exclude>**/*Application.class</exclude>
+                    <exclude>**/config/**</exclude>
+                    <exclude>**/exception/**</exclude>
+                    <exclude>**/controller/**</exclude>
+                    <exclude>**/service/S3StorageService.class</exclude>
+                    <exclude>**/service/PdfReportService.class</exclude>
+                </excludes>
+            </configuration>
         </plugin>
     </plugins></build>
 </project>
