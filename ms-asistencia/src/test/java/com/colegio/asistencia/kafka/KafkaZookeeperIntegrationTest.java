@@ -47,9 +47,9 @@ import static org.assertj.core.api.Assertions.assertThat;
  * de carga sin instalar el motor en el vehiculo definitivo.
  */
 @SpringBootTest(
-    // Contexto minimo: solo beans Kafka, sin JPA ni Security para agilizar el arranque
-    classes = KafkaZookeeperIntegrationTest.TestConfig.class,
-    webEnvironment = SpringBootTest.WebEnvironment.NONE
+    // webEnvironment MOCK necesario: SecurityConfig requiere HttpSecurity (contexto servlet)
+    // EmbeddedKafka funciona igual sin importar el webEnvironment
+    webEnvironment = SpringBootTest.WebEnvironment.MOCK
 )
 @EmbeddedKafka(
     partitions = 1,
