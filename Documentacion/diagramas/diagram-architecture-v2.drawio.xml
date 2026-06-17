@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" type="device">
+  <diagram id="arch-v2" name="Arquitectura v2 - Next.js + api-v1">
+    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1500" pageHeight="1000" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- Capa: Frontend -->
+        <mxCell id="grp-frontend" value="FRONTEND" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#6c8ebf;dashed=1;verticalAlign=top;fontStyle=1;fontSize=14;fontColor=#1a4a8a;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="240" height="140" as="geometry"/>
+        </mxCell>
+        <mxCell id="frontend" value="Next.js 14 App Router (3000)&#10;standalone Node, sin Nginx&#10;rewrites() -&gt; BFF" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="60" y="80" width="200" height="80" as="geometry"/>
+        </mxCell>
+
+        <!-- Capa: Backend -->
+        <mxCell id="grp-backend" value="BACKEND" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#82b366;dashed=1;verticalAlign=top;fontStyle=1;fontSize=14;fontColor=#1a4a8a;" vertex="1" parent="1">
+          <mxGeometry x="40" y="220" width="700" height="540" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="bff" value="BFF (8080)&#10;Spring WebFlux + Resilience4j&#10;/api/v1/bff/*" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="60" y="260" width="220" height="80" as="geometry"/>
+        </mxCell>
+
+        <!-- API REST -->
+        <mxCell id="grp-api" value="API REST" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#d6b656;dashed=1;verticalAlign=top;fontStyle=1;fontSize=14;fontColor=#1a4a8a;" vertex="1" parent="1">
+          <mxGeometry x="60" y="380" width="220" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="gw" value="API Gateway (8081)&#10;Spring Cloud Gateway&#10;JWT RS256 via JWKS + rate-limit&#10;rutas /api/v1/*" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="80" y="410" width="180" height="80" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="auth" value="MS-Auth (8082)&#10;/api/v1/auth/*  /api/v1/admin/*&#10;JWT issuer, RBAC" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="340" y="260" width="220" height="90" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="acad" value="MS-Academico (8083)&#10;/api/v1/notas/*&#10;Notas, PDF (iText), S3" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="340" y="370" width="220" height="90" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="asist" value="MS-Asistencia (8084)&#10;/api/v1/asistencias/*&#10;Productor Kafka" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="340" y="480" width="220" height="90" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="msg" value="MS-Mensajeria (8085)&#10;/api/v1/mensajes/* (gateway)&#10;Consumer Kafka" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="340" y="590" width="220" height="90" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="exc" value="exception/GlobalExceptionHandler&#10;en BFF + los 4 microservicios" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="600" y="610" width="120" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- Capa: Persistencia -->
+        <mxCell id="grp-persist" value="PERSISTENCIA (JPA/Hibernate + PostgreSQL 17, Database-per-Service)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#b85450;dashed=1;verticalAlign=top;fontStyle=1;fontSize=14;fontColor=#1a4a8a;" vertex="1" parent="1">
+          <mxGeometry x="800" y="220" width="280" height="540" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="db-auth" value="postgres-auth:5432&#10;auth_db" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;shape=cylinder3;" vertex="1" parent="1">
+          <mxGeometry x="840" y="270" width="200" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="db-acad" value="postgres-academico:5433&#10;acad_db" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;shape=cylinder3;" vertex="1" parent="1">
+          <mxGeometry x="840" y="380" width="200" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="db-asist" value="postgres-asistencia:5434&#10;asist_db" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;shape=cylinder3;" vertex="1" parent="1">
+          <mxGeometry x="840" y="490" width="200" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="db-msg" value="postgres-mensajeria:5435&#10;msg_db" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;shape=cylinder3;" vertex="1" parent="1">
+          <mxGeometry x="840" y="600" width="200" height="70" as="geometry"/>
+        </mxCell>
+
+        <!-- Mensajeria / Observabilidad / Storage -->
+        <mxCell id="kafka" value="Kafka (9092) + Zookeeper&#10;topic: inasistencia.detectada" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="1140" y="480" width="220" height="70" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="s3" value="MinIO / S3&#10;bucket reportes-academicos" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fad7ac;strokeColor=#b46504;" vertex="1" parent="1">
+          <mxGeometry x="1140" y="380" width="220" height="60" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="obs" value="ELK Stack + Prometheus/Grafana&#10;/actuator/health + /actuator/prometheus" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fad7ac;strokeColor=#b46504;" vertex="1" parent="1">
+          <mxGeometry x="1140" y="260" width="220" height="70" as="geometry"/>
+        </mxCell>
+
+        <!-- Edges -->
+        <mxCell id="e1" value="HTTPS" style="endArrow=classic;html=1;fontSize=10;" edge="1" parent="1" source="frontend" target="bff"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e2" value="HTTP" style="endArrow=classic;html=1;fontSize=10;" edge="1" parent="1" source="bff" target="gw"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e3" style="endArrow=classic;html=1;" edge="1" parent="1" source="gw" target="auth"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e4" style="endArrow=classic;html=1;" edge="1" parent="1" source="gw" target="acad"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e5" style="endArrow=classic;html=1;" edge="1" parent="1" source="gw" target="asist"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e6" style="endArrow=classic;html=1;" edge="1" parent="1" source="gw" target="msg"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="e7" value="JPA" style="endArrow=classic;html=1;fontSize=10;" edge="1" parent="1" source="auth" target="db-auth"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e8" value="JPA" style="endArrow=classic;html=1;fontSize=10;" edge="1" parent="1" source="acad" target="db-acad"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e9" value="JPA" style="endArrow=classic;html=1;fontSize=10;" edge="1" parent="1" source="asist" target="db-asist"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e10" value="JPA" style="endArrow=classic;html=1;fontSize=10;" edge="1" parent="1" source="msg" target="db-msg"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="e11" style="endArrow=classic;html=1;dashed=1;" edge="1" parent="1" source="asist" target="kafka"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e12" style="endArrow=classic;html=1;dashed=1;" edge="1" parent="1" source="kafka" target="msg"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e13" style="endArrow=classic;html=1;dashed=1;" edge="1" parent="1" source="acad" target="s3"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

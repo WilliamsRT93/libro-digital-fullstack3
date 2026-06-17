@@ -1,0 +1,65 @@
+@startuml
+skinparam backgroundColor transparent
+skinparam shadowing false
+skinparam componentBackgroundColor #1e3a5f
+skinparam componentBorderColor #3b82f6
+skinparam componentFontColor #ffffff
+skinparam databaseBackgroundColor #6b46c1
+skinparam databaseBorderColor #9673a6
+skinparam databaseFontColor #ffffff
+skinparam cloudBackgroundColor #b46504
+skinparam cloudBorderColor #d6b656
+skinparam cloudFontColor #ffffff
+skinparam packageBackgroundColor #f8fafc
+skinparam packageBorderColor #1a4a8a
+skinparam packageFontColor #1a4a8a
+skinparam packageFontStyle bold
+skinparam ArrowColor #475569
+skinparam ArrowFontColor #1e293b
+
+title Arquitectura — Plataforma Libro de Clases Digital
+
+package "FRONTEND" {
+  [Next.js 14\nApp Router\n:3000] as FE
+}
+
+package "BACKEND" {
+  [BFF\nSpring WebFlux\n:8080] as BFF
+
+  package "API REST" {
+    [API Gateway\nSpring Cloud Gateway\nJWT RS256 vía JWKS\n:8081] as GW
+  }
+
+  [MS-Auth\n/api/v1/auth/*\n:8082] as AUTH
+  [MS-Academico\n/api/v1/notas/*\n:8083] as ACAD
+  [MS-Asistencia\n/api/v1/asistencias/*\n:8084] as ASIST
+  [MS-Mensajeria\n:8085] as MSG
+}
+
+package "PERSISTENCIA (JPA/Hibernate + PostgreSQL 17)" {
+  database "auth_db\n:5432" as DBAUTH
+  database "acad_db\n:5433" as DBACAD
+  database "asist_db\n:5434" as DBASIST
+  database "msg_db\n:5435" as DBMSG
+}
+
+cloud "Kafka + Zookeeper\n:9092" as KAFKA
+cloud "MinIO / S3\nreportes-academicos" as MINIO
+
+FE --> BFF : HTTPS
+BFF --> GW : HTTP
+GW --> AUTH
+GW --> ACAD
+GW --> ASIST
+GW --> MSG
+
+AUTH --> DBAUTH : JPA
+ACAD --> DBACAD : JPA
+ASIST --> DBASIST : JPA
+MSG --> DBMSG : JPA
+
+ASIST ..> KAFKA : inasistencia.detectada
+KAFKA ..> MSG
+ACAD ..> MINIO : reportes PDF
+
+@enduml

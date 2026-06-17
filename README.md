@@ -1701,7 +1701,7 @@ Fullstack 3/
 ├── README.md
 ├── ARCHITECTURE_DECISIONS.md
 ├── docker-compose.yml
-├── diagram-architecture.drawio.xml
+├── Documentacion/diagramas/      (diagram-architecture.drawio.xml y otros, versionados)
 ├── api-gateway/
 ├── bff/
 ├── ms-auth/

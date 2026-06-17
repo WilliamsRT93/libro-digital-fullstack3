@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" type="device">
+  <diagram id="estructura" name="Estructura del Repositorio">
+    <mxGraphModel dx="1800" dy="1100" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1700" pageHeight="1150" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="title" value="Estructura del Repositorio — libro-digital-fullstack3" style="text;html=1;fontSize=18;fontStyle=1;fontColor=#1a4a8a;align=left;" vertex="1" parent="1">
+          <mxGeometry x="20" y="10" width="900" height="30" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="root" value="libro-digital-fullstack3/" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0f2040;strokeColor=#1a4a8a;fontColor=#ffffff;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="760" y="50" width="200" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- Nivel 1: carpetas raiz -->
+        <mxCell id="docs" value="Documentacion/\nentregables academicos" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f1f5f9;strokeColor=#64748b;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="20" y="160" width="150" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="rootfiles" value="README.md · CLAUDE.md\ndocker-compose.yml\n.env.example" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f1f5f9;strokeColor=#64748b;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="190" y="160" width="170" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="gw" value="api-gateway/\nSpring Cloud Gateway" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="380" y="160" width="160" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="bff" value="bff/\nBackend For Frontend" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="560" y="160" width="160" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="auth" value="ms-auth/\nJWT + usuarios" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="740" y="160" width="150" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="acad" value="ms-academico/\nnotas + PDF + S3" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="900" y="160" width="150" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="asist" value="ms-asistencia/\nasistencia + Kafka" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="160" width="150" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="msg" value="ms-mensajeria/\nmensajes + consumer" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1220" y="160" width="150" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="frontend" value="frontend/\nNext.js 14 App Router" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1380" y="160" width="160" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="k8s" value="k8s/\nmanifests Kubernetes" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e2e8f0;strokeColor=#475569;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="190" y="260" width="160" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="infra" value="infra/\nkong, logstash, prometheus" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e2e8f0;strokeColor=#475569;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="20" y="260" width="160" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="scripts" value="scripts/\nutilidades de operacion" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e2e8f0;strokeColor=#475569;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="360" y="260" width="160" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- Nivel 2: subcarpetas ms-auth -->
+        <mxCell id="auth-controller" value="controller/\nAuthController\nUserAdminController" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fdf2f2;strokeColor=#b85450;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="660" y="280" width="150" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="auth-service" value="service/\nAuthService\nUserAdminService" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fdf2f2;strokeColor=#b85450;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="820" y="280" width="150" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="auth-security" value="security/\nJwtService" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fdf2f2;strokeColor=#b85450;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="660" y="345" width="150" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="auth-exception" value="exception/\nGlobalExceptionHandler" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fdf2f2;strokeColor=#b85450;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="820" y="345" width="150" height="40" as="geometry"/>
+        </mxCell>
+
+        <!-- Nivel 2: ms-academico -->
+        <mxCell id="acad-controller" value="controller/\nNotaController" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fdf2f2;strokeColor=#b85450;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="990" y="280" width="150" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="acad-service" value="service/\nNotaService\nPdfReportService\nS3StorageService" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fdf2f2;strokeColor=#b85450;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="990" y="330" width="150" height="65" as="geometry"/>
+        </mxCell>
+
+        <!-- Nivel 2: ms-asistencia -->
+        <mxCell id="asist-controller" value="controller/\nAsistenciaController" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fdf2f2;strokeColor=#b85450;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1160" y="280" width="150" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="asist-kafka" value="kafka/\nKafkaZookeeperIntegrationTest" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fdf2f2;strokeColor=#b85450;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1160" y="330" width="150" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- Nivel 2: ms-mensajeria -->
+        <mxCell id="msg-service" value="service/\nInasistenciaConsumer" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fdf2f2;strokeColor=#b85450;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1320" y="280" width="150" height="40" as="geometry"/>
+        </mxCell>
+
+        <!-- Nivel 2: frontend -->
+        <mxCell id="fe-login" value="app/page.jsx\nlogin" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eff6ff;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1480" y="280" width="150" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="fe-dashboard" value="app/dashboard/\nasistencia, notas,\nreportes, usuarios" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eff6ff;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1480" y="330" width="150" height="55" as="geometry"/>
+        </mxCell>
+
+        <!-- Nivel 2: k8s -->
+        <mxCell id="k8s-files" value="namespace.yaml · postgres.yaml\nkafka.yaml · ms-*.yaml\napi-gateway.yaml · bff-frontend.yaml" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#475569;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="190" y="345" width="155" height="70" as="geometry"/>
+        </mxCell>
+
+        <!-- Nivel 2: infra -->
+        <mxCell id="infra-files" value="kong/ · logstash/pipeline/\nprometheus/" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#475569;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="20" y="345" width="160" height="40" as="geometry"/>
+        </mxCell>
+
+        <!-- Nivel 2: scripts -->
+        <mxCell id="scripts-files" value="start-staged · reset-keys\nrebuild-microservicios\nfix-docker · fix-network" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#475569;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="360" y="345" width="160" height="55" as="geometry"/>
+        </mxCell>
+
+        <!-- Edges nivel 0 -> nivel 1 -->
+        <mxCell id="e1" style="endArrow=none;html=1;" edge="1" parent="1" source="root" target="docs"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e2" style="endArrow=none;html=1;" edge="1" parent="1" source="root" target="rootfiles"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e3" style="endArrow=none;html=1;" edge="1" parent="1" source="root" target="gw"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e4" style="endArrow=none;html=1;" edge="1" parent="1" source="root" target="bff"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e5" style="endArrow=none;html=1;" edge="1" parent="1" source="root" target="auth"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e6" style="endArrow=none;html=1;" edge="1" parent="1" source="root" target="acad"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e7" style="endArrow=none;html=1;" edge="1" parent="1" source="root" target="asist"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e8" style="endArrow=none;html=1;" edge="1" parent="1" source="root" target="msg"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e9" style="endArrow=none;html=1;" edge="1" parent="1" source="root" target="frontend"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e10" style="endArrow=none;html=1;" edge="1" parent="1" source="root" target="k8s"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e11" style="endArrow=none;html=1;" edge="1" parent="1" source="root" target="infra"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e12" style="endArrow=none;html=1;" edge="1" parent="1" source="root" target="scripts"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- Edges nivel 1 -> nivel 2 -->
+        <mxCell id="e13" style="endArrow=none;html=1;" edge="1" parent="1" source="auth" target="auth-controller"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e14" style="endArrow=none;html=1;" edge="1" parent="1" source="auth" target="auth-service"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e15" style="endArrow=none;html=1;" edge="1" parent="1" source="auth" target="auth-security"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e16" style="endArrow=none;html=1;" edge="1" parent="1" source="auth" target="auth-exception"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="e17" style="endArrow=none;html=1;" edge="1" parent="1" source="acad" target="acad-controller"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e18" style="endArrow=none;html=1;" edge="1" parent="1" source="acad" target="acad-service"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="e19" style="endArrow=none;html=1;" edge="1" parent="1" source="asist" target="asist-controller"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e20" style="endArrow=none;html=1;" edge="1" parent="1" source="asist" target="asist-kafka"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="e21" style="endArrow=none;html=1;" edge="1" parent="1" source="msg" target="msg-service"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="e22" style="endArrow=none;html=1;" edge="1" parent="1" source="frontend" target="fe-login"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e23" style="endArrow=none;html=1;" edge="1" parent="1" source="frontend" target="fe-dashboard"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="e24" style="endArrow=none;html=1;" edge="1" parent="1" source="k8s" target="k8s-files"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e25" style="endArrow=none;html=1;" edge="1" parent="1" source="infra" target="infra-files"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e26" style="endArrow=none;html=1;" edge="1" parent="1" source="scripts" target="scripts-files"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

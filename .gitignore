@@ -256,5 +256,7 @@ allure-report/
 # Carpetas excluidas del repositorio
 # =============================================================================
 scripts/
-Documentacion/
+Documentacion/*
+!Documentacion/diagramas/
+!Documentacion/diagramas/**
 docs/

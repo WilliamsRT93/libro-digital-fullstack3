@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" type="device">
+  <diagram id="infra" name="Infraestructura - Docker Compose">
+    <mxGraphModel dx="1700" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="title" value="Infraestructura de Despliegue — Libro de Clases Digital (Docker Compose)" style="text;html=1;fontSize=18;fontStyle=1;fontColor=#1a4a8a;align=left;" vertex="1" parent="1">
+          <mxGeometry x="20" y="10" width="900" height="30" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="grp-compose" value="docker-compose.yml — red libro-net" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#64748b;dashed=1;verticalAlign=top;fontStyle=1;fontSize=13;fontColor=#1a4a8a;" vertex="1" parent="1">
+          <mxGeometry x="20" y="50" width="1180" height="640" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="frontend" value="frontend\nNext.js 14 (node:22-alpine)\nPuerto 3000" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="60" y="90" width="200" height="70" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="bff" value="bff\nSpring WebFlux\nPuerto 8080" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="60" y="190" width="200" height="60" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="gw" value="api-gateway\nSpring Cloud Gateway\nPuerto 8081" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="60" y="280" width="200" height="60" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="kong" value="kong (perfil alterno)\nProxy 8000 / Admin 8001" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="300" y="280" width="200" height="60" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="auth" value="ms-auth\nPuerto 8082" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="60" y="390" width="180" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="acad" value="ms-academico\nPuerto 8083" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="270" y="390" width="180" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="asist" value="ms-asistencia\nPuerto 8084" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="480" y="390" width="180" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="msg" value="ms-mensajeria\nPuerto 8085" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="690" y="390" width="180" height="60" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="db-auth" value="postgres-auth\nPuerto 5432\nvolumen auth_data" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;shape=cylinder3;" vertex="1" parent="1">
+          <mxGeometry x="60" y="500" width="180" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="db-acad" value="postgres-academico\nPuerto 5433\nvolumen acad_data" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;shape=cylinder3;" vertex="1" parent="1">
+          <mxGeometry x="270" y="500" width="180" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="db-asist" value="postgres-asistencia\nPuerto 5434\nvolumen asist_data" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;shape=cylinder3;" vertex="1" parent="1">
+          <mxGeometry x="480" y="500" width="180" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="db-msg" value="postgres-mensajeria\nPuerto 5435\nvolumen msg_data" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;shape=cylinder3;" vertex="1" parent="1">
+          <mxGeometry x="690" y="500" width="180" height="70" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="kafka" value="kafka\nPuerto 9092" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="930" y="390" width="160" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="zk" value="zookeeper\nPuerto 2181" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="930" y="460" width="160" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="minio" value="minio / S3\nAPI 9000 · Consola 9001\nbucket reportes-academicos" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fad7ac;strokeColor=#b46504;" vertex="1" parent="1">
+          <mxGeometry x="930" y="90" width="220" height="70" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="grp-obs" value="Observabilidad" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#b46504;dashed=1;verticalAlign=top;fontStyle=1;fontSize=12;fontColor=#1a4a8a;" vertex="1" parent="1">
+          <mxGeometry x="930" y="190" width="220" height="220" as="geometry"/>
+        </mxCell>
+        <mxCell id="es" value="elasticsearch :9200" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fad7ac;strokeColor=#b46504;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="950" y="218" width="180" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="ls" value="logstash :5044 (beats) / :5000 (tcp)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fad7ac;strokeColor=#b46504;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="950" y="253" width="180" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="kib" value="kibana :5601" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fad7ac;strokeColor=#b46504;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="950" y="288" width="180" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="prom" value="prometheus :9090" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fad7ac;strokeColor=#b46504;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="950" y="323" width="180" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="graf" value="grafana :3001" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fad7ac;strokeColor=#b46504;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="950" y="358" width="180" height="30" as="geometry"/>
+        </mxCell>
+
+        <!-- Edges -->
+        <mxCell id="e1" style="endArrow=classic;html=1;" edge="1" parent="1" source="frontend" target="bff"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e2" style="endArrow=classic;html=1;" edge="1" parent="1" source="bff" target="gw"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e3" style="endArrow=classic;html=1;" edge="1" parent="1" source="gw" target="auth"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e4" style="endArrow=classic;html=1;" edge="1" parent="1" source="gw" target="acad"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e5" style="endArrow=classic;html=1;" edge="1" parent="1" source="gw" target="asist"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e6" style="endArrow=classic;html=1;" edge="1" parent="1" source="gw" target="msg"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="e7" value="JPA" style="endArrow=classic;html=1;fontSize=10;" edge="1" parent="1" source="auth" target="db-auth"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e8" value="JPA" style="endArrow=classic;html=1;fontSize=10;" edge="1" parent="1" source="acad" target="db-acad"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e9" value="JPA" style="endArrow=classic;html=1;fontSize=10;" edge="1" parent="1" source="asist" target="db-asist"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e10" value="JPA" style="endArrow=classic;html=1;fontSize=10;" edge="1" parent="1" source="msg" target="db-msg"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="e11" style="endArrow=classic;html=1;dashed=1;" edge="1" parent="1" source="asist" target="kafka"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e12" style="endArrow=classic;html=1;dashed=1;" edge="1" parent="1" source="kafka" target="zk"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e13" style="endArrow=classic;html=1;dashed=1;" edge="1" parent="1" source="kafka" target="msg"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e14" style="endArrow=classic;html=1;dashed=1;" edge="1" parent="1" source="acad" target="minio"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- Leyenda -->
+        <mxCell id="leg1" value="Frontend" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="20" y="710" width="100" height="25" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg2" value="BFF" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="130" y="710" width="100" height="25" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg3" value="Gateway / Kafka" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="240" y="710" width="120" height="25" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg4" value="Microservicios" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="370" y="710" width="120" height="25" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg5" value="PostgreSQL" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="500" y="710" width="100" height="25" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg6" value="Storage / Observabilidad" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fad7ac;strokeColor=#b46504;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="610" y="710" width="170" height="25" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
