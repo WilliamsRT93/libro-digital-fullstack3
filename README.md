@@ -1247,6 +1247,22 @@ Ejecución verificada con JDK 21.0.11 + Maven 3.8.7:
 | ms-academico | NotaService | **100%** | N/A | ✓ PASA |
 | ms-asistencia | AsistenciaService | **100%** | **100%** | ✓ PASA |
 
+**Cobertura global por microservicio** (línea, sobre el alcance medido por JaCoCo):
+
+| Microservicio | Líneas | Ramas | Mínimo rúbrica (60%) |
+|---|---|---|---|
+| ms-auth | **85.3%** | 87.5% | ✓ PASA |
+| ms-academico | **93.5%** | N/A (sin ramas) | ✓ PASA |
+| ms-asistencia | **69.3%** | 50.0% | ✓ PASA |
+
+**Alcance de la medición:** la estrategia de testing es unitaria sobre la capa de **Service**
+(con Mockito, sin infraestructura — ver inventario abajo). `jacoco-maven-plugin` excluye de la
+medición las clases de infraestructura que esa estrategia nunca tuvo intención de cubrir con
+pruebas unitarias: `*Application`, `config/**`, `exception/**`, `controller/**` y `security/**`
+en `ms-auth`; lo mismo en `ms-academico` más `S3StorageService` y `PdfReportService` (E/S real a
+S3/iText, propia de pruebas de integración). Configuración en el `<plugin>` de `jacoco-maven-plugin`
+de cada `pom.xml`.
+
 Para generar el reporte HTML de cobertura:
 
 ```bash
