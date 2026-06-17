@@ -12,30 +12,30 @@ spring:
         - id: ms-auth
           uri: http://ms-auth:8082
           predicates:
-            - Path=/auth/**
+            - Path=/api/v1/auth/**
         - id: ms-auth-admin
           uri: http://ms-auth:8082
           predicates:
-            - Path=/admin/**
+            - Path=/api/v1/admin/**
         - id: ms-academico
           uri: http://ms-academico:8083
           predicates:
-            - Path=/api/notas/**
+            - Path=/api/v1/notas/**
         - id: ms-asistencia
           uri: http://ms-asistencia:8084
           predicates:
-            - Path=/api/asistencias/**
+            - Path=/api/v1/asistencias/**
         - id: ms-mensajeria
           uri: http://ms-mensajeria:8085
           predicates:
-            - Path=/api/mensajes/**
+            - Path=/api/v1/mensajes/**
   security:
     oauth2:
       resourceserver:
         jwt:
           # El JWKS se descarga la primera vez que llega un request, no al arranque.
           # Esto evita que el Gateway falle al iniciar si MS-Auth aun no esta listo.
-          jwk-set-uri: ${JWT_PUBLIC_KEY_URL:http://ms-auth:8082/auth/.well-known/jwks.json}
+          jwk-set-uri: ${JWT_PUBLIC_KEY_URL:http://ms-auth:8082/api/v1/auth/.well-known/jwks.json}
 
 management:
   endpoints:

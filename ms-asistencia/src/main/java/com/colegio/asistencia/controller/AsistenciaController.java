@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
  * RBAC: solo los roles DOCENTE o ADMIN pueden registrar asistencia.
  */
 @RestController
-@RequestMapping("/api/asistencias")
+@RequestMapping("/api/v1/asistencias")
 @RequiredArgsConstructor
 public class AsistenciaController {
 

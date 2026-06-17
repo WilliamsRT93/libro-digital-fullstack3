@@ -16,7 +16,7 @@ import java.util.Map;
  * Reenvia las llamadas al API Gateway y aplica circuit breaker para resiliencia downstream.
  */
 @RestController
-@RequestMapping("/bff")
+@RequestMapping("/api/v1/bff")
 @RequiredArgsConstructor
 public class BffController {
 
@@ -27,7 +27,7 @@ public class BffController {
     public Mono<ResponseEntity<Map>> login(@RequestBody Map<String, String> body) {
         // Proxy del login: el BFF no procesa credenciales, solo las reenvia al Gateway.
         return gatewayClient.post()
-                .uri("/auth/login")
+                .uri("/api/v1/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(body)
                 .retrieve()
@@ -40,7 +40,7 @@ public class BffController {
                                                          @RequestHeader(HttpHeaders.AUTHORIZATION) String auth) {
         // Reenvio del header Authorization para que el Gateway valide el JWT.
         return gatewayClient.post()
-                .uri("/api/asistencias")
+                .uri("/api/v1/asistencias")
                 .header(HttpHeaders.AUTHORIZATION, auth)
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(body)
@@ -54,7 +54,7 @@ public class BffController {
                                                    @RequestHeader(HttpHeaders.AUTHORIZATION) String auth) {
         // Devuelve el PDF como arreglo de bytes para que el frontend lo presente como descarga.
         return gatewayClient.get()
-                .uri(uri -> uri.path("/api/notas/reporte-pdf").queryParam("alumnoId", alumnoId).build())
+                .uri(uri -> uri.path("/api/v1/notas/reporte-pdf").queryParam("alumnoId", alumnoId).build())
                 .header(HttpHeaders.AUTHORIZATION, auth)
                 .retrieve()
                 .toEntity(byte[].class);
@@ -66,7 +66,7 @@ public class BffController {
     @CircuitBreaker(name = "gatewayCB")
     public Mono<ResponseEntity<Object>> listarUsuarios(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth) {
         return gatewayClient.get()
-                .uri("/admin/users")
+                .uri("/api/v1/admin/users")
                 .header(HttpHeaders.AUTHORIZATION, auth)
                 .retrieve()
                 .toEntity(Object.class);
@@ -77,7 +77,7 @@ public class BffController {
     public Mono<ResponseEntity<Object>> crearUsuario(@RequestBody Map<String, Object> body,
                                                      @RequestHeader(HttpHeaders.AUTHORIZATION) String auth) {
         return gatewayClient.post()
-                .uri("/admin/users")
+                .uri("/api/v1/admin/users")
                 .header(HttpHeaders.AUTHORIZATION, auth)
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(body)
@@ -90,7 +90,7 @@ public class BffController {
     public Mono<ResponseEntity<Void>> eliminarUsuario(@PathVariable Long id,
                                                      @RequestHeader(HttpHeaders.AUTHORIZATION) String auth) {
         return gatewayClient.delete()
-                .uri("/admin/users/" + id)
+                .uri("/api/v1/admin/users/" + id)
                 .header(HttpHeaders.AUTHORIZATION, auth)
                 .retrieve()
                 .toBodilessEntity()

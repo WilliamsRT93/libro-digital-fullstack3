@@ -27,7 +27,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: http://ms-auth:8082/auth/.well-known/jwks.json
+          jwk-set-uri: http://ms-auth:8082/api/v1/auth/.well-known/jwks.json
 
 # Exposicion de endpoints de Actuator (sin esto /actuator/health no responde)
 management:

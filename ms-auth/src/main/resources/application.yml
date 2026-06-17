@@ -32,7 +32,7 @@ spring:
       resourceserver:
         jwt:
           # MS-Auth tambien valida sus propios JWT para los endpoints /admin/**
-          jwk-set-uri: http://localhost:8082/auth/.well-known/jwks.json
+          jwk-set-uri: http://localhost:8082/api/v1/auth/.well-known/jwks.json
 
 jwt:
   # Asymmetric RS256 keys. In production load from a secrets manager (Vault, AWS SM).

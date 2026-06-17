@@ -5,7 +5,7 @@ import { getToken, clearSession } from "../auth/session.js";
 // Inyecta el header Authorization en cada request si hay un token y maneja
 // expiraciones de sesion (401) limpiando el storage y forzando login.
 const client = axios.create({
-  baseURL: "/bff",
+  baseURL: "/api/v1/bff",
   timeout: 10000
 });
 

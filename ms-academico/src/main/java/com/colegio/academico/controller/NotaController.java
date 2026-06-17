@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
  * Permite la creacion de notas y la descarga de reportes PDF por alumno.
  */
 @RestController
-@RequestMapping("/api/notas")
+@RequestMapping("/api/v1/notas")
 @RequiredArgsConstructor
 public class NotaController {
 

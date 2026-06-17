@@ -12,8 +12,8 @@ services:
     routes:
       - name: auth-public
         paths:
-          - /auth/login
-          - /auth/.well-known
+          - /api/v1/auth/login
+          - /api/v1/auth/.well-known
         strip_path: false
         methods: [GET, POST, OPTIONS]
 
@@ -23,7 +23,7 @@ services:
     routes:
       - name: notas-route
         paths:
-          - /api/notas
+          - /api/v1/notas
         strip_path: false
         methods: [GET, POST, PUT, DELETE, OPTIONS]
     plugins:
@@ -40,7 +40,7 @@ services:
     routes:
       - name: asistencias-route
         paths:
-          - /api/asistencias
+          - /api/v1/asistencias
         strip_path: false
         methods: [GET, POST, OPTIONS]
     plugins:
@@ -56,7 +56,7 @@ services:
     routes:
       - name: mensajes-route
         paths:
-          - /api/mensajes
+          - /api/v1/mensajes
         strip_path: false
     plugins:
       - name: jwt

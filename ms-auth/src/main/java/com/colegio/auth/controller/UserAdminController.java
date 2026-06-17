@@ -19,7 +19,7 @@ import java.util.List;
  * cuando el JWT contiene el rol correspondiente.
  */
 @RestController
-@RequestMapping("/admin/users")
+@RequestMapping("/api/v1/admin/users")
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('ADMIN')")
 public class UserAdminController {
